@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Weapon_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: Standalone
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 12
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    - serializedVersion: 3
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 50
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 036bb89c7bbdd7d4693919d3619ed77c, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 877d7231eef68464694c8f2b16b02771, type: 3}
+  - {fileID: 21300000, guid: 94b8bb625c18e6a41b8fe1efd927a4c1, type: 3}
+  - {fileID: 21300000, guid: b7e1b9d3f740ad74d995e91d6e37968b, type: 3}
+  - {fileID: 21300000, guid: 2ee43825db533524a9b2beee958634e2, type: 3}
+  - {fileID: 21300000, guid: 23f15206a8ffd174f89178d029a58315, type: 3}
+  - {fileID: 21300000, guid: cc89dc471d3b9c2499169e6fea1caf56, type: 3}
+  - {fileID: 21300000, guid: d1149a18fdd156041b1b154b3d6f152f, type: 3}
+  - {fileID: 21300000, guid: 08a837da087d61048bfaafa2ef1d2961, type: 3}
+  - {fileID: 21300000, guid: 3932206bdf06c9045b4e63d2b00e570b, type: 3}
+  - {fileID: 21300000, guid: 219b938b20d49024ca92978025aeeaf6, type: 3}
+  - {fileID: 21300000, guid: 2055785c4f537c2478479d4dc3b70129, type: 3}
+  - {fileID: 21300000, guid: 0d944a1f0aeb91d4dae2e61808ad00d6, type: 3}
+  - {fileID: 21300000, guid: 9b35439f0e4df014093104e9faa64951, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - UI_Icon_Renders_tier3_shotgun
+  - ui_icon_render_t_cons_molotov
+  - ui_icon_render_cons_healthshot_2_regenerator
+  - UI_Icon_Renders_tier2_mle
+  - ui_icon_mle_bayonet_summer_vice
+  - ui_icon_render_cons_grenade_m26
+  - ui_icon_render_cons_grenade_m67
+  - UI_Icon_Renders_tier3_sniper
+  - ui_icon_mle_bayonet_easter_time
+  - UI_Icon_Renders_tier1_shotgun
+  - ui_icon_render_cons_healthshot_2_neurostim
+  - UI_Icon_Renders_tier2_rifle
+  - UI_Icon_Renders_tier3_smg
+  m_RenderDataMap: {}
+  m_Tag: Weapon_Atlas
+  m_IsVariant: 0
