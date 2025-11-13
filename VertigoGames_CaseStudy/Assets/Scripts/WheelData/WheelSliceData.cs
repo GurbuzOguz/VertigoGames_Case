@@ -1,6 +1,17 @@
 using UnityEngine;
 
-public enum SliceType { Reward, Bomb }
+public enum SliceType
+{
+    None,
+    Cash,
+    Grenade,
+    Coin,
+    BronzeChest,
+    GoldChest,
+    Armor,
+    KnifePoints,
+    Bomb 
+}
 
 [CreateAssetMenu(menuName = "Wheel/Slice Data", fileName = "SliceData_")]
 public class WheelSliceData : ScriptableObject

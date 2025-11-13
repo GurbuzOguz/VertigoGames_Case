@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f82ef2bb5c56849b4aab50a2cb1399, type: 3}
+  m_Name: BronzeThemeData
+  m_EditorClassIdentifier: 
+  wheelType: 0
+  spinBackground: {fileID: 21300000, guid: 183271658f8caca44873abfc8a6f35a7, type: 3}
+  indicatorSprite: {fileID: 21300000, guid: 29c908a67ece9594db53f2d07590c443, type: 3}
+  titleColor: {r: 0.57254905, g: 0.3372549, b: 0.10980393, a: 1}
+  rewardTextColor: {r: 0.57254905, g: 0.3372549, b: 0.10980392, a: 1}

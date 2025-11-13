@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ba527101aba06041a5a445a57ec5ca5, type: 3}
-  m_Name: SliceData_KnifePoints
+  m_Name: SliceData_Coin
   m_EditorClassIdentifier: 
-  sliceType: 0
-  iconSprite: {fileID: 21300000, guid: d9d686f9979390d4a82692a27e42cef5, type: 3}
-  rewardValue: 10
-  description: Knife Points
+  sliceType: 3
+  iconSprite: {fileID: 21300000, guid: 3ba024b2cad118d49917c8c2c37292bc, type: 3}
+  rewardValue: 500
+  description: Gold

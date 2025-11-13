@@ -75,7 +75,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 11
 --- !u!1 &2941201963137253093
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wheelSliceData: {fileID: 11400000, guid: e41c1db6360e24b4091675c3dd92b55d, type: 2}
-  rewardText: {fileID: 2941201964409164655}
+  rewardText_value: {fileID: 2941201964409164655}
   iconImage: {fileID: 2941201962345478593}
 --- !u!1 &2941201964409164649
 GameObject:

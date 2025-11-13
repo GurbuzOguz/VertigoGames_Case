@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ba527101aba06041a5a445a57ec5ca5, type: 3}
-  m_Name: SliceData_BronzChest
+  m_Name: SliceData_KnifePoints
   m_EditorClassIdentifier: 
-  sliceType: 0
-  iconSprite: {fileID: 21300000, guid: ea7de8adaa64b4942a17d3df10d524f3, type: 3}
+  sliceType: 7
+  iconSprite: {fileID: 21300000, guid: d9d686f9979390d4a82692a27e42cef5, type: 3}
   rewardValue: 10
-  description: Bronz Chest
+  description: Knife Points

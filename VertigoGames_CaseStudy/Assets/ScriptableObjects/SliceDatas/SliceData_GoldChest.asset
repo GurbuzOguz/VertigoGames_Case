@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba527101aba06041a5a445a57ec5ca5, type: 3}
   m_Name: SliceData_GoldChest
   m_EditorClassIdentifier: 
-  sliceType: 0
+  sliceType: 5
   iconSprite: {fileID: 21300000, guid: 1721e494fbf6ad347affb101d1e85bf6, type: 3}
   rewardValue: 10
   description: Gold Chest
