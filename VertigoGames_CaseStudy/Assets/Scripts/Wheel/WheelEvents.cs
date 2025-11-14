@@ -11,5 +11,6 @@ public static class WheelEvents
     public static Action OnSliceTick;
     public static Action<WheelSliceData> OnRewardCalculated;
     public static Action<WheelType> OnLevelChanged;
+    public static Action<int> OnLevelNumberChanged;
 
 }

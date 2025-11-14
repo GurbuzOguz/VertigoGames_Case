@@ -48,6 +48,7 @@ public class WheelController : MonoBehaviour
 
         // ⭐ Tema için gerekli event
         WheelEvents.OnLevelChanged?.Invoke(currentLevel.wheelType);
+        WheelEvents.OnLevelNumberChanged?.Invoke(currentLevelNumber);
 
         BuildSlices(currentLevel);
     }
