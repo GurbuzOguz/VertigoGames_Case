@@ -24,12 +24,31 @@ public class RewardManager : MonoBehaviour
     {
         if (data.sliceType == SliceType.Bomb)
         {
-            ResetRewards(); 
+            ResetRewards();
             return;
         }
 
-        AddOrUpdateReward(data);
+        RewardUIItem uiItem;
+
+        if (!activeRewards.TryGetValue(data.sliceType, out uiItem))
+        {
+            // 🟦 1) ÖNCE UI ITEM OLUŞTUR (Ama sayıyı artırma)
+            var go = Instantiate(rewardItemPrefab, rewardListParent);
+            uiItem = go.GetComponent<RewardUIItem>();
+            uiItem.Setup(data.iconSprite, 0); // amount = 0 başla
+
+            activeRewards.Add(data.sliceType, uiItem);
+        }
+
+        // 🟦 2) Pop efekt oynat
+        RewardPopEffectController.Instance.PlayPopEffect(data, uiItem.IconTransform, () =>
+        {
+            // 🟦 3) Efekt bitince sayıyı artır
+            uiItem.AddAmount(data.rewardValue);
+        });
     }
+
+
     
     private void ResetRewards()
     {

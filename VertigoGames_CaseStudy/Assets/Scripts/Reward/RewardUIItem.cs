@@ -7,15 +7,17 @@ public class RewardUIItem : MonoBehaviour
 {
     [SerializeField] private Image iconImage;
     [SerializeField] private TextMeshProUGUI amountText_value;
+    public Transform IconTransform => iconImage.transform;
 
     private int currentAmount = 0;
 
     public void Setup(Sprite icon, int amount)
     {
         iconImage.sprite = icon;
-        currentAmount = 0;
-        AddAmount(amount);
+        currentAmount = amount;
+        amountText_value.text = "x" + amount;
     }
+
 
     public void AddAmount(int amount)
     {
