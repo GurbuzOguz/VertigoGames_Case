@@ -25,6 +25,9 @@ public class WheelLevelDataBase: ScriptableObject
 
     [Header("Slice Scriptable Objects List")]
     public List<WheelSliceData> allSlicePool = new List<WheelSliceData>();
+    
+    [Header("Only gold wheel slice pool")]
+    public List<WheelSliceData> goldSlicePool = new List<WheelSliceData>();
 
 #if UNITY_EDITOR
     
@@ -54,26 +57,99 @@ public class WheelLevelDataBase: ScriptableObject
     {
         level.slices.Clear();
 
-        if (allSlicePool == null || allSlicePool.Count == 0)
+        switch (level.wheelType)
         {
-            Debug.LogWarning("WheelLevelDatabase: allSlicePool boş, slice doldurulamıyor.");
+            // -------------------------------------------------------
+            // ⭐ BRONZE LEVEL → Tam 1 adet bomba olacak
+            // -------------------------------------------------------
+            case WheelType.Bronze:
+            {
+                AddBombSlice(level);
+                FillWithNonBomb(level, allSlicePool, 7); // geri kalan 7 dilim
+                break;
+            }
+
+            // -------------------------------------------------------
+            // ⭐ SILVER LEVEL → Bomba yok
+            // -------------------------------------------------------
+            case WheelType.Silver:
+            {
+                FillWithNonBomb(level, allSlicePool, 8);
+                break;
+            }
+
+            // -------------------------------------------------------
+            // ⭐ GOLD LEVEL → Bomba yok, özel gold havuzdan doldur
+            // -------------------------------------------------------
+            case WheelType.Gold:
+            {
+                FillWithNonBomb(level, goldSlicePool, 8);
+                break;
+            }
+        }
+        
+        ShuffleList(level.slices);
+    }
+    
+    private void ShuffleList<T>(List<T> list)
+    {
+        for (int i = list.Count - 1; i > 0; i--)
+        {
+            int swapIndex = UnityEngine.Random.Range(0, i + 1);
+            (list[i], list[swapIndex]) = (list[swapIndex], list[i]); // tuple swap
+        }
+    }
+    
+    private void AddBombSlice(WheelLevel level)
+    {
+        var bomb = allSlicePool.Find(s => s.sliceType == SliceType.Bomb);
+    
+        if (bomb == null)
+        {
+            Debug.LogError("Bronze level için Bomb slice bulunamadı!");
             return;
         }
 
-        // 8 adet slice doldur
+        level.slices.Add(bomb);
+    }
+    
+    private void FillWithNonBomb(WheelLevel level, List<WheelSliceData> pool, int countToAdd)
+    {
+        if (pool == null || pool.Count == 0)
+        {
+            Debug.LogError("Slice pool boş, slice doldurulamadı.");
+            return;
+        }
+
+        int added = 0;
         int safety = 0;
-        while (level.slices.Count < 8 && safety < 1000)
+
+        while (added < countToAdd && safety < 1000)
         {
             safety++;
-            var candidate = allSlicePool[UnityEngine.Random.Range(0, allSlicePool.Count)];
 
-            // Silver & Gold level'larda bomba yasak
-            if (level.wheelType != WheelType.Bronze && candidate.sliceType == SliceType.Bomb)
+            var candidate = pool[UnityEngine.Random.Range(0, pool.Count)];
+
+            if (candidate == null) 
+                continue;
+
+            // Bomb istemiyorsak atla
+            if (candidate.sliceType == SliceType.Bomb)
                 continue;
 
             level.slices.Add(candidate);
+            added++;
+        }
+
+        if (added < countToAdd)
+        {
+            Debug.LogWarning($"FillWithNonBomb: Hedef {countToAdd}, eklenen {added}. Pool yetersiz olabilir.");
         }
     }
+
+
+
+
 
     // Inspector'da elle + ile level eklesen bile kuralları düzeltmek için
     private void OnValidate()

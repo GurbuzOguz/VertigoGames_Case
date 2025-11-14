@@ -110,6 +110,7 @@ public class WheelRotateController : MonoBehaviour
                     {
                         WheelEvents.OnSpinCompleted?.Invoke();
                         //StartIdleSpin(); // İstersen aç
+                         Debug.Log("STOPPED ANGLE = " + GetWheelAngle());
                     });
             });
     }

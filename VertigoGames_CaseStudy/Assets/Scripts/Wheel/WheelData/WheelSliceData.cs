@@ -10,6 +10,9 @@ public enum SliceType
     GoldChest,
     Armor,
     KnifePoints,
+    GoldSpinKnife,
+    GoldSpinRiffle,
+    GoldSpinShotgun,
     Bomb 
 }
 

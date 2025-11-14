@@ -22,25 +22,30 @@ public class WheelController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI rewardInfoText_value;
     [SerializeField] private Transform sliceParent;
     [SerializeField] private GameObject slicePrefab;
+    [SerializeField] private Transform wheelRoot;
+    [SerializeField] private int currentLevelNumber = 1;
 
     public List<GameObject> sliceTemplates;
+
     private WheelLevel currentLevel;
-    
-    [SerializeField] private int startLevelNumber = 1;
+    private int lastSliceIndex;
+
 
     private void Start()
     {
-        SetupLevel(startLevelNumber);
+        SetupLevel(currentLevelNumber);
     }
 
     private void OnEnable()
     {
         WheelEvents.OnSpinRequest += HandleSpinRequest;
+        WheelEvents.OnSpinCompleted += NotifyRewardManager;
     }
 
     private void OnDisable()
     {
         WheelEvents.OnSpinRequest -= HandleSpinRequest;
+        WheelEvents.OnSpinCompleted -= NotifyRewardManager;
     }
 
     public void SetupLevel(int levelNumber)
@@ -55,8 +60,11 @@ public class WheelController : MonoBehaviour
     private void HandleSpinRequest()
     {
         int sliceIndex = UnityEngine.Random.Range(0, currentLevel.slices.Count);
+
         WheelEvents.OnSliceChosen?.Invoke(sliceIndex);
+        SaveSliceIndex(sliceIndex);
     }
+
 
     private void ApplyTheme(WheelType type)
     {
@@ -90,32 +98,37 @@ public class WheelController : MonoBehaviour
         if (rewardInfoText_value != null)
             rewardInfoText_value.color = theme.rewardTextColor;
     }
+    
+    private void ClearSlices()
+    {
+        for (int i = sliceParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(sliceParent.GetChild(i).gameObject);
+        }
+    }
 
     private void BuildSlices(WheelLevel level)
     {
-        if (sliceTemplates == null || sliceTemplates.Count < level.slices.Count)
+        ClearSlices();
+            
+        if (sliceTemplates.Count != level.slices.Count)
         {
-            Debug.LogError("Slice templates eksik! Inspector'da 8 template atanmalı.");
+            Debug.LogError("sliceTemplates ve slices sayısı eşleşmiyor!");
             return;
-        }
-        
-        for (int i = 0; i < sliceParent.childCount; i++)
-        {
-            if (i > 8)
-                Destroy(sliceParent.GetChild(i).gameObject);
         }
 
         for (int i = 0; i < level.slices.Count; i++)
         {
             var sliceData = level.slices[i];
-            if (sliceData == null) continue;
 
-            var go = Instantiate(slicePrefab, sliceParent, false);
-            var slice = go.GetComponent<WheelSliceDataSet>();
-            slice.Setup(sliceData);
+            var go = Instantiate(slicePrefab, sliceParent);
+            var sliceSet = go.GetComponent<WheelSliceDataSet>();
+            sliceSet.Setup(sliceData);
 
             go.transform.localPosition = sliceTemplates[i].transform.localPosition;
             go.transform.localRotation = sliceTemplates[i].transform.localRotation;
+
+            Debug.Log($"Created Slice {i}: {sliceData.sliceType}");
         }
     }
 
@@ -143,6 +156,26 @@ public class WheelController : MonoBehaviour
             // Örnek: "Up to x10 Rewards" gibi
             rewardInfoText_value.text = "Up To x10 Rewards";
         }
+    }
+
+    private void SaveSliceIndex(int index)
+    {
+        lastSliceIndex = index;
+    }
+
+    private void NotifyRewardManager()
+    {
+        var sliceData = currentLevel.slices[lastSliceIndex];
+        WheelEvents.OnRewardCalculated?.Invoke(sliceData);
+        GoToNextLevel();
+        
+        Debug.Log("SHOULD BE SLICE INDEX = " + lastSliceIndex);
+    }
+
+    private void GoToNextLevel()
+    {
+        currentLevelNumber++;
+        SetupLevel(currentLevelNumber);
     }
 
 #if UNITY_EDITOR

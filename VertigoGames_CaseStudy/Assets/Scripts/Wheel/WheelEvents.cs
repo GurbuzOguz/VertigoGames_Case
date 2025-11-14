@@ -8,4 +8,5 @@ public static class WheelEvents
     public static Action OnSpinStarted;              // WheelRotate başlarken
     public static Action OnSpinCompleted;            // WheelRotate bittiğinde
     public static Action OnSliceTick;
+    public static Action<WheelSliceData> OnRewardCalculated;
 }

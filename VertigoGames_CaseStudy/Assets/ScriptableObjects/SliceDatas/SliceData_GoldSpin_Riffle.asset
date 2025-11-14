@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ba527101aba06041a5a445a57ec5ca5, type: 3}
-  m_Name: SliceData_Bomb
+  m_Name: SliceData_GoldSpin_Riffle
   m_EditorClassIdentifier: 
-  sliceType: 11
-  iconSprite: {fileID: 21300000, guid: d1149a18fdd156041b1b154b3d6f152f, type: 3}
-  rewardValue: 0
-  description: Bomb
+  sliceType: 9
+  iconSprite: {fileID: 21300000, guid: 0d944a1f0aeb91d4dae2e61808ad00d6, type: 3}
+  rewardValue: 10
+  description: Gold Riffle
