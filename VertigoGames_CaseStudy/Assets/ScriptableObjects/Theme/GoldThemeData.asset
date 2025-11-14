@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f82ef2bb5c56849b4aab50a2cb1399, type: 3}
   m_Name: GoldThemeData
   m_EditorClassIdentifier: 
+  displayName: GOLD SPIN
   wheelType: 2
   spinBackground: {fileID: 21300000, guid: d809819441d8df5448412e9720cd6649, type: 3}
   indicatorSprite: {fileID: 21300000, guid: 7d37b082d45c16d47b1d5e63b01222ae, type: 3}

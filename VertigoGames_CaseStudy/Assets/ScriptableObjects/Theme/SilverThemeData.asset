@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f82ef2bb5c56849b4aab50a2cb1399, type: 3}
   m_Name: SilverThemeData
   m_EditorClassIdentifier: 
+  displayName: SILVER SPIN
   wheelType: 1
   spinBackground: {fileID: 21300000, guid: d9c91f7f0826fb844a0da7361d7b3d0a, type: 3}
   indicatorSprite: {fileID: 21300000, guid: c5c6a8287e4f4014ca8ef498f9f50aa1, type: 3}

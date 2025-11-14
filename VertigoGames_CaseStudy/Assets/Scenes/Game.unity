@@ -232,11 +232,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2941201963137253092, guid: b304824801a11f642b6d3559db293035, type: 3}
   m_PrefabInstance: {fileID: 101073935}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &245618682 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2941201963137253093, guid: b304824801a11f642b6d3559db293035, type: 3}
-  m_PrefabInstance: {fileID: 1492504562}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &256466566
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +335,7 @@ GameObject:
   m_Component:
   - component: {fileID: 281339612}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: ui__imaage_slice_referances
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -539,7 +534,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &330621267
 MonoBehaviour:
@@ -947,11 +942,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2941201963137253092, guid: b304824801a11f642b6d3559db293035, type: 3}
   m_PrefabInstance: {fileID: 768191610}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &797235498 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2941201963137253093, guid: b304824801a11f642b6d3559db293035, type: 3}
-  m_PrefabInstance: {fileID: 529145407}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &867803769
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,26 +1033,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelDatabase: {fileID: 11400000, guid: 0679270ccaa47464cafb2b6119e006af, type: 2}
-  bronzeTheme: {fileID: 11400000, guid: 0b99cc42343013848922edd0e7fc6e15, type: 2}
-  silverTheme: {fileID: 11400000, guid: d05381ffbcca2644b8cc3e106a1779bc, type: 2}
-  goldTheme: {fileID: 11400000, guid: 50eb2afa8fbdff647b9edf8e869822a0, type: 2}
-  spinBackground: {fileID: 867803771}
-  indicatorImage: {fileID: 920138813}
-  titleText_value: {fileID: 1603527652}
-  rewardInfoText_value: {fileID: 1227313196}
+  wheelRoot: {fileID: 867803770}
   sliceParent: {fileID: 867803770}
   slicePrefab: {fileID: 2941201963137253093, guid: b304824801a11f642b6d3559db293035, type: 3}
-  wheelRoot: {fileID: 867803770}
-  currentLevelNumber: 1
   sliceTemplates:
-  - {fileID: 2059494721}
-  - {fileID: 1998786664}
-  - {fileID: 1293380142}
-  - {fileID: 797235498}
-  - {fileID: 1540083080}
-  - {fileID: 1499598027}
-  - {fileID: 245618682}
-  - {fileID: 934081479}
+  - {fileID: 1247176199}
+  - {fileID: 768191611}
+  - {fileID: 883358530}
+  - {fileID: 529145408}
+  - {fileID: 1509598292}
+  - {fileID: 1589589544}
+  - {fileID: 1492504563}
+  - {fileID: 101073936}
 --- !u!114 &867803774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1076,9 +1058,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wheel: {fileID: 867803770}
-  sliceCount: 8
-  spinDuration: 6
   idleSpeed: 20
+  spinDuration: 6
   bounceAmount: 10
   bounceDuration: 0.25
 --- !u!1001 &883358529
@@ -1253,7 +1234,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &920138811
 GameObject:
@@ -1344,11 +1325,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02715c8bc9e8b1a4da66c413129a9054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &934081479 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2941201963137253093, guid: b304824801a11f642b6d3559db293035, type: 3}
-  m_PrefabInstance: {fileID: 101073935}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1464,7 +1440,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1162931457
 MonoBehaviour:
@@ -1592,7 +1568,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1227313195
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1881,11 +1857,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &1293380142 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2941201963137253093, guid: b304824801a11f642b6d3559db293035, type: 3}
-  m_PrefabInstance: {fileID: 883358529}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1492504562
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1995,11 +1966,6 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2941201963137253092, guid: b304824801a11f642b6d3559db293035, type: 3}
   m_PrefabInstance: {fileID: 1492504562}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1499598027 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2941201963137253093, guid: b304824801a11f642b6d3559db293035, type: 3}
-  m_PrefabInstance: {fileID: 1589589543}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1509598291
 PrefabInstance:
@@ -2144,11 +2110,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1540083080 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2941201963137253093, guid: b304824801a11f642b6d3559db293035, type: 3}
-  m_PrefabInstance: {fileID: 1509598291}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1542375087
 GameObject:
   m_ObjectHideFlags: 0
@@ -2525,6 +2486,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1703088630}
+  - component: {fileID: 1703088631}
   m_Layer: 5
   m_Name: ui_wheel_settings
   m_TagString: Untagged
@@ -2561,6 +2523,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1703088631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703088629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23dbacde1e15b0488f01544a65920a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  themes:
+  - {fileID: 11400000, guid: 0b99cc42343013848922edd0e7fc6e15, type: 2}
+  - {fileID: 11400000, guid: d05381ffbcca2644b8cc3e106a1779bc, type: 2}
+  - {fileID: 11400000, guid: 50eb2afa8fbdff647b9edf8e869822a0, type: 2}
+  spinBackgroundImage: {fileID: 867803771}
+  indicatorImage: {fileID: 920138813}
+  titleText: {fileID: 1603527652}
+  defaultRewardTextColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1777055273
 GameObject:
   m_ObjectHideFlags: 0
@@ -2772,16 +2754,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spinButton: {fileID: 1781774466}
---- !u!1 &1998786664 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2941201963137253093, guid: b304824801a11f642b6d3559db293035, type: 3}
-  m_PrefabInstance: {fileID: 768191610}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &2059494721 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2941201963137253093, guid: b304824801a11f642b6d3559db293035, type: 3}
-  m_PrefabInstance: {fileID: 2941201964373661923}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2072341836
 GameObject:
   m_ObjectHideFlags: 0

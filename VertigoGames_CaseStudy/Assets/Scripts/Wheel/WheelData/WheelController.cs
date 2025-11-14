@@ -1,35 +1,22 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UI;
 
 public class WheelController : MonoBehaviour
 {
-    [Header("Data")] [SerializeField] private WheelLevelDataBase levelDatabase;
+    [Header("Level Data")]
+    [SerializeField] private WheelLevelDataBase levelDatabase;
 
-    [Header("WheelTheme Data")] [SerializeField]
-    private WheelThemeData bronzeTheme;
-
-    [SerializeField] private WheelThemeData silverTheme;
-    [SerializeField] private WheelThemeData goldTheme;
-
-    [Header("UI References")] [SerializeField]
-    private Image spinBackground;
-
-    [SerializeField] private Image indicatorImage;
-    [SerializeField] private TextMeshProUGUI titleText_value;
-    [SerializeField] private TextMeshProUGUI rewardInfoText_value;
-    [SerializeField] private Transform sliceParent;
-    [SerializeField] private GameObject slicePrefab;
-    [SerializeField] private Transform wheelRoot;
-    [SerializeField] private int currentLevelNumber = 1;
-
-    public List<GameObject> sliceTemplates;
+    [Header("References")]
+    [SerializeField] private Transform wheelRoot;          // WheelRotateController’ın döndürdüğü objedir
+    [SerializeField] private Transform sliceParent;        // Instantiate edilen slice'ların parent'ı
+    [SerializeField] private GameObject slicePrefab;       // Slice görsel prefabı
+    [SerializeField] private List<Transform> sliceTemplates; // UI template referansları (her biri 0–7)
 
     private WheelLevel currentLevel;
     private int lastSliceIndex;
-
+    private int currentLevelNumber = 1;
 
     private void Start()
     {
@@ -48,153 +35,118 @@ public class WheelController : MonoBehaviour
         WheelEvents.OnSpinCompleted -= NotifyRewardManager;
     }
 
-    public void SetupLevel(int levelNumber)
+    public void SetupLevel(int levelNum)
     {
-        currentLevel = levelDatabase.levels.Find(l => l.levelNumber == levelNumber);
+        currentLevelNumber = levelNum;
+        currentLevel = levelDatabase.levels.Find(l => l.levelNumber == levelNum);
 
-        ApplyTheme(currentLevel.wheelType);
+        if (currentLevel == null)
+        {
+            Debug.LogError("Level bulunamadı: " + levelNum);
+            return;
+        }
+
+        // ⭐ Tema için gerekli event
+        WheelEvents.OnLevelChanged?.Invoke(currentLevel.wheelType);
+
         BuildSlices(currentLevel);
-        UpdateTexts(currentLevel);
     }
 
+
+
+    //------------------------------------------------------------
+    // Slice index seçimi → FinalAngle hesaplama → Event gönderme
+    //------------------------------------------------------------
     private void HandleSpinRequest()
     {
-        int sliceIndex = UnityEngine.Random.Range(0, currentLevel.slices.Count);
+        int sliceIndex = Random.Range(0, currentLevel.slices.Count);
+        lastSliceIndex = sliceIndex;
 
+        // 1) Doğru final açıyı hesapla
+        float finalAngle = CalculateFinalAngle(sliceIndex);
+
+        // 2) WheelRotateController’a döndürmesi için gönder
+        WheelEvents.OnRotateToAngle?.Invoke(finalAngle);
+
+        // 3) Bilgi için sliceIndex'i de yayınlayalım (opsiyon)
         WheelEvents.OnSliceChosen?.Invoke(sliceIndex);
-        SaveSliceIndex(sliceIndex);
     }
 
-
-    private void ApplyTheme(WheelType type)
+    //------------------------------------------------------------
+    // DOĞRU AÇI HESAPLAMA — %100 HATA YOK
+    //------------------------------------------------------------
+    private float CalculateFinalAngle(int sliceIndex)
     {
-        WheelThemeData theme = bronzeTheme;
+        float currentAngle = wheelRoot.localEulerAngles.z;
 
-        switch (type)
-        {
-            case WheelType.Silver:
-                theme = silverTheme;
-                break;
-            case WheelType.Gold:
-                theme = goldTheme;
-                break;
-        }
+        // UI’daki template açısı
+        float templateAngle = sliceTemplates[sliceIndex].localEulerAngles.z;
 
-        if (theme == null)
-        {
-            Debug.LogWarning($"Theme for {type} bulunamadı.");
-            return;
-        }
+        // Wheel ters yönde döndüğü için açı ters çevrilir
+        float targetAngle = -templateAngle;
 
-        if (spinBackground != null)
-            spinBackground.sprite = theme.spinBackground;
+        // Aradaki fark
+        float delta = Mathf.DeltaAngle(currentAngle, targetAngle);
 
-        if (indicatorImage != null)
-            indicatorImage.sprite = theme.indicatorSprite;
+        // Fazladan tur (casino hissi)
+        float extra = Random.Range(3, 6) * 360f;
 
-        if (titleText_value != null)
-            titleText_value.color = theme.titleColor;
-
-        if (rewardInfoText_value != null)
-            rewardInfoText_value.color = theme.rewardTextColor;
-    }
-    
-    private void ClearSlices()
-    {
-        for (int i = sliceParent.childCount - 1; i >= 0; i--)
-        {
-            Destroy(sliceParent.GetChild(i).gameObject);
-        }
+        return currentAngle + extra + delta;
     }
 
-    private void BuildSlices(WheelLevel level)
-    {
-        ClearSlices();
-            
-        if (sliceTemplates.Count != level.slices.Count)
-        {
-            Debug.LogError("sliceTemplates ve slices sayısı eşleşmiyor!");
-            return;
-        }
-
-        for (int i = 0; i < level.slices.Count; i++)
-        {
-            var sliceData = level.slices[i];
-
-            var go = Instantiate(slicePrefab, sliceParent);
-            var sliceSet = go.GetComponent<WheelSliceDataSet>();
-            sliceSet.Setup(sliceData);
-
-            go.transform.localPosition = sliceTemplates[i].transform.localPosition;
-            go.transform.localRotation = sliceTemplates[i].transform.localRotation;
-
-            Debug.Log($"Created Slice {i}: {sliceData.sliceType}");
-        }
-    }
-
-
-    private void UpdateTexts(WheelLevel level)
-    {
-        if (titleText_value != null)
-        {
-            switch (level.wheelType)
-            {
-                case WheelType.Bronze:
-                    titleText_value.text = "BRONZE SPIN";
-                    break;
-                case WheelType.Silver:
-                    titleText_value.text = "SILVER SPIN";
-                    break;
-                case WheelType.Gold:
-                    titleText_value.text = "GOLD SPIN";
-                    break;
-            }
-        }
-
-        if (rewardInfoText_value != null)
-        {
-            // Örnek: "Up to x10 Rewards" gibi
-            rewardInfoText_value.text = "Up To x10 Rewards";
-        }
-    }
-
-    private void SaveSliceIndex(int index)
-    {
-        lastSliceIndex = index;
-    }
-
+    //------------------------------------------------------------
+    // SPIN BİTTİ → ÖDÜL GÖNDER
+    //------------------------------------------------------------
     private void NotifyRewardManager()
     {
-        var sliceData = currentLevel.slices[lastSliceIndex];
-        WheelEvents.OnRewardCalculated?.Invoke(sliceData);
+        WheelEvents.OnRewardCalculated?.Invoke(currentLevel.slices[lastSliceIndex]);
         GoToNextLevel();
-        
-        Debug.Log("SHOULD BE SLICE INDEX = " + lastSliceIndex);
     }
-
+    
     private void GoToNextLevel()
     {
         currentLevelNumber++;
+
+        WheelLevel nextLevel = levelDatabase.levels.Find(l => l.levelNumber == currentLevelNumber);
+
+        if (nextLevel == null)
+        {
+            Debug.LogWarning("GoToNextLevel → Yeni level bulunamadı. En yüksek levele ulaşıldı.");
+            return;
+        }
+
+        Debug.Log("Yeni level yüklendi → Level " + currentLevelNumber);
+
+        // 🔥 Doğrusu: Tema + slice + diğer setup burada çalışır
         SetupLevel(currentLevelNumber);
     }
 
-#if UNITY_EDITOR
-    [ContextMenu("Test Level 1")]
-    private void TestLevel1()
-    {
-        SetupLevel(1);
-    }
 
-    [ContextMenu("Test Level 5")]
-    private void TestLevel5()
-    {
-        SetupLevel(5);
-    }
 
-    [ContextMenu("Test Level 30")]
-    private void TestLevel30()
+    //------------------------------------------------------------
+    // Slice UI oluşturma
+    //------------------------------------------------------------
+    private void BuildSlices(WheelLevel level)
     {
-        SetupLevel(30);
+        // Önce sliceParent içini temizle
+        for (int i = sliceParent.childCount - 1; i >= 0; i--)
+            Destroy(sliceParent.GetChild(i).gameObject);
+
+        if (sliceTemplates.Count != level.slices.Count)
+        {
+            Debug.LogError("sliceTemplates ve slices sayısı farklı!");
+            return;
+        }
+
+        // Slice prefablarını template açılarına göre oluştur
+        for (int i = 0; i < level.slices.Count; i++)
+        {
+            var go = Instantiate(slicePrefab, sliceParent);
+            var set = go.GetComponent<WheelSliceDataSet>();
+            set.Setup(level.slices[i]);
+
+            go.transform.localPosition = sliceTemplates[i].localPosition;
+            go.transform.localRotation = sliceTemplates[i].localRotation;
+        }
     }
-#endif
 }

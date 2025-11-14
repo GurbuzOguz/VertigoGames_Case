@@ -4,114 +4,111 @@ using DG.Tweening;
 public class WheelRotateController : MonoBehaviour
 {
     [SerializeField] private Transform wheel;
-    [SerializeField] private int sliceCount = 8;
-    [SerializeField] private float spinDuration = 4f;
-
     [SerializeField] private float idleSpeed = 20f;
+    [SerializeField] private float spinDuration = 4f;
     [SerializeField] private float bounceAmount = 10f;
     [SerializeField] private float bounceDuration = 0.25f;
 
     private Tween idleTween;
-    private Tween spinTween;
 
-    private float sliceAngle;
-    private float lastTickAngle;   // ✔ Artık slice algılamada bunu kullanıyoruz
+    // Tick takibi için
+    private float lastAngle = 0f;
 
     private void Start()
     {
-        sliceAngle = 360f / sliceCount;
-        lastTickAngle = GetWheelAngle();
-
         StartIdleSpin();
-    }
-
-    private void Update()
-    {
-        EmitTickEvents();  // ✔ Yeni slice geçiş algılaması
-    }
-
-    // ------------------------------------------------------
-    //  ANGLE HELPERS
-    // ------------------------------------------------------
-    private float GetWheelAngle()
-    {
-        return (wheel.localEulerAngles.z + 360f) % 360f;
-    }
-
-    // ------------------------------------------------------
-    //  NEW TICK SYSTEM (slice geçişini doğru hesaplayan)
-    // ------------------------------------------------------
-    private void EmitTickEvents()
-    {
-        float currentAngle = GetWheelAngle();
-
-        float delta = Mathf.Abs(Mathf.DeltaAngle(lastTickAngle, currentAngle));
-
-        // Slice sınırını geçtiysek tick üret
-        if (delta >= sliceAngle)
-        {
-            WheelEvents.OnSliceTick?.Invoke();
-            lastTickAngle = currentAngle; // ✔ bir sonraki slice hedefi
-        }
     }
 
     private void OnEnable()
     {
-        WheelEvents.OnSliceChosen += SpinToIndex;
+        WheelEvents.OnRotateToAngle += SpinToAngle;
+        WheelEvents.OnSpinRequest += OnSpinRequested;
     }
 
     private void OnDisable()
     {
-        WheelEvents.OnSliceChosen -= SpinToIndex;
+        WheelEvents.OnRotateToAngle -= SpinToAngle;
+        WheelEvents.OnSpinRequest -= OnSpinRequested;
     }
 
-    // ------------------------------------------------------
-    //  IDLE ROTATION (spin başlamadan önceki yavaş dönüş)
-    // ------------------------------------------------------
-    private void StartIdleSpin()
+    // --------------------------------------------------------------------
+    // 🟩 Spin talebi geldiğinde ilk olarak tetikler (Buton kapansın)
+    // --------------------------------------------------------------------
+    private void OnSpinRequested()
     {
-        idleTween = wheel
-            .DORotate(new Vector3(0, 0, -360f), idleSpeed, RotateMode.FastBeyond360)
-            .SetEase(Ease.Linear)
-            .SetLoops(-1);
+        WheelEvents.OnSpinStarted?.Invoke();
     }
 
     private void StopIdleSpin()
     {
-        idleTween?.Kill();
+        if (idleTween != null)
+        {
+            idleTween.Kill();
+            idleTween = null;
+        }
+    }
+    
+    private void StartIdleSpin()
+    {
+        if (idleTween != null) return; 
+
+        idleTween = wheel
+            .DORotate(new Vector3(0, 0, wheel.localEulerAngles.z - 360f), idleSpeed, RotateMode.FastBeyond360)
+            .SetEase(Ease.Linear)
+            .SetLoops(-1, LoopType.Restart)
+            .OnUpdate(() =>
+            {
+                SliceTickCheck();
+            });
     }
 
-    // ------------------------------------------------------
-    //  MAIN SPIN
-    // ------------------------------------------------------
-    private void SpinToIndex(int index)
+
+    private void SpinToAngle(float finalAngle)
     {
-        WheelEvents.OnSpinStarted?.Invoke();
         StopIdleSpin();
+        lastAngle = wheel.localEulerAngles.z;
 
-        float targetAngle = -(index * sliceAngle);
-        float extraRotations = Random.Range(3, 6) * 360f;
-        float finalAngle = extraRotations + targetAngle;
-
-        // Next tick lifecycle reset → spin sırasında doğru tick hesaplanır
-        lastTickAngle = GetWheelAngle();
-
-        spinTween = wheel
+        wheel
             .DORotate(new Vector3(0, 0, finalAngle), spinDuration, RotateMode.FastBeyond360)
             .SetEase(Ease.OutCubic)
+            .OnUpdate(SliceTickCheck)   // ⬅ SPIN TICK
             .OnComplete(() =>
             {
-                // Tiny bounce (casino effect)
                 wheel
                     .DORotate(new Vector3(0, 0, finalAngle - bounceAmount), bounceDuration)
                     .SetEase(Ease.OutSine)
                     .SetLoops(2, LoopType.Yoyo)
-                    .OnComplete(() =>
-                    {
-                        WheelEvents.OnSpinCompleted?.Invoke();
-                        //StartIdleSpin(); // İstersen aç
-                         Debug.Log("STOPPED ANGLE = " + GetWheelAngle());
-                    });
+                    .OnComplete(NormalizeAndComplete);
             });
+    }
+
+    // --------------------------------------------------------------------
+    // 🟨 SLICE TICK HESABI (her 45 derecede bir indicator animasyonu)
+    // --------------------------------------------------------------------
+    private void SliceTickCheck()
+    {
+        float current = wheel.localEulerAngles.z;
+
+        int prevIndex = Mathf.FloorToInt((lastAngle % 360f) / 45f);
+        int currIndex = Mathf.FloorToInt((current % 360f) / 45f);
+
+        if (prevIndex != currIndex)
+        {
+            WheelEvents.OnSliceTick?.Invoke();
+        }
+
+        lastAngle = current;
+    }
+
+    private void NormalizeAndComplete()
+    {
+        // Açıyı normalize et
+        float normalized = wheel.localEulerAngles.z % 360f;
+        wheel.localRotation = Quaternion.Euler(0, 0, normalized);
+
+        WheelEvents.OnSpinCompleted?.Invoke();
+
+        // İşlem bitti → idle spin geri başlasın
+        StartIdleSpin();
     }
 }

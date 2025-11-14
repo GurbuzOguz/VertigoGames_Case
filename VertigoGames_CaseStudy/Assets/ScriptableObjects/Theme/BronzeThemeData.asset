@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f82ef2bb5c56849b4aab50a2cb1399, type: 3}
   m_Name: BronzeThemeData
   m_EditorClassIdentifier: 
+  displayName: BRONZE SPIN
   wheelType: 0
   spinBackground: {fileID: 21300000, guid: 183271658f8caca44873abfc8a6f35a7, type: 3}
   indicatorSprite: {fileID: 21300000, guid: 29c908a67ece9594db53f2d07590c443, type: 3}

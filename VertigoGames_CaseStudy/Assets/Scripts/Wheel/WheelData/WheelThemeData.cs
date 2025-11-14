@@ -3,6 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "WheelThemeData", menuName = "Wheel/Wheel Theme Data")]
 public class WheelThemeData : ScriptableObject
 {
+    [Header("Text")]
+    public string displayName;   // Bronze, Silver, Gold
+
     public WheelType wheelType;
 
     [Header("Görseller")]
