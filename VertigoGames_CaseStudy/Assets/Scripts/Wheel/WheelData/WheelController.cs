@@ -27,12 +27,14 @@ public class WheelController : MonoBehaviour
     {
         WheelEvents.OnSpinRequest += HandleSpinRequest;
         WheelEvents.OnSpinCompleted += NotifyRewardManager;
+        WheelEvents.OnLevelReset += ResetLevel;
     }
 
     private void OnDisable()
     {
         WheelEvents.OnSpinRequest -= HandleSpinRequest;
         WheelEvents.OnSpinCompleted -= NotifyRewardManager;
+        WheelEvents.OnLevelReset -= ResetLevel;
     }
 
     public void SetupLevel(int levelNum)
@@ -100,9 +102,24 @@ public class WheelController : MonoBehaviour
     //------------------------------------------------------------
     private void NotifyRewardManager()
     {
-        WheelEvents.OnRewardCalculated?.Invoke(currentLevel.slices[lastSliceIndex]);
+        WheelSliceData slice = currentLevel.slices[lastSliceIndex];
+
+        // 1) BOMBA kontrolü
+        if (slice.sliceType == SliceType.Bomb)
+        {
+            Debug.Log("BOMBA seçildi → Lose!");
+            WheelEvents.OnBombSelected?.Invoke();   // lose panel açılacak
+            //WheelEvents.OnLevelReset?.Invoke();
+            return;                                 // ödül akışı yok
+        }
+
+        // 2) NORMAL ÖDÜL (non-bomb)
+        WheelEvents.OnRewardCalculated?.Invoke(slice);
+
+        // 3) LEVEL UP
         GoToNextLevel();
     }
+
     
     private void GoToNextLevel()
     {
@@ -149,5 +166,11 @@ public class WheelController : MonoBehaviour
             go.transform.localPosition = sliceTemplates[i].localPosition;
             go.transform.localRotation = sliceTemplates[i].localRotation;
         }
+    }
+    
+    private void ResetLevel()
+    {
+        currentLevelNumber = 1;
+        SetupLevel(currentLevelNumber);
     }
 }

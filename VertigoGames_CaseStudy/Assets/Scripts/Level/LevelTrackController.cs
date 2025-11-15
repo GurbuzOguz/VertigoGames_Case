@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
@@ -5,18 +6,17 @@ using System.Collections.Generic;
 
 public class LevelTrackController : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private RectTransform ui_parent;              // Kayan konteyner
-    [SerializeField] private RectTransform ui_currentBorder;       // Sabit border
+    [Header("References")] [SerializeField]
+    private RectTransform ui_parent; // Kayan konteyner
+
+    [SerializeField] private RectTransform ui_currentBorder; // Sabit border
     [SerializeField] private GameObject levelIconPrefab;
 
-    [Header("Settings")]
-    [SerializeField] private int totalLevels = 50;
-    [SerializeField] private float spacing = 120f;        // ikonlar arası mesafe
-    [SerializeField] private float moveDuration = 0.35f;  // kayma süresi
+    [Header("Settings")] [SerializeField] private int totalLevels = 50;
+    [SerializeField] private float spacing = 120f; // ikonlar arası mesafe
+    [SerializeField] private float moveDuration = 0.35f; // kayma süresi
 
-    [Header("Colors")]
-    [SerializeField] private Color normalColor = Color.white;
+    [Header("Colors")] [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color greenColor = new Color(0.4f, 1f, 0.4f);
     [SerializeField] private Color goldColor = new Color(1f, 0.85f, 0.2f);
 
@@ -32,15 +32,19 @@ public class LevelTrackController : MonoBehaviour
         PositionIcons();
         UpdateAllIcons();
         CenterInstant(1);
+    }
 
+    private void OnEnable()
+    {
+        WheelEvents.OnLevelReset += OnLevelReset;
         WheelEvents.OnLevelNumberChanged += CenterOnLevel;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         WheelEvents.OnLevelNumberChanged -= CenterOnLevel;
+        WheelEvents.OnLevelReset -= OnLevelReset;
     }
-
 
     // ============================================================
     // ICON BUILD
@@ -114,7 +118,7 @@ public class LevelTrackController : MonoBehaviour
         else
         {
             ui_parent.DOMoveX(newWorldPos.x, moveDuration)
-                     .SetEase(Ease.OutCubic);
+                .SetEase(Ease.OutCubic);
         }
     }
 
@@ -163,5 +167,10 @@ public class LevelTrackController : MonoBehaviour
         }
     }
 
-
+    private void OnLevelReset()
+    {
+        // Level 1’e dön
+        UpdateAllIcons(); // 1 → 50 textleri ve renkleri yeniden bas
+        Center(1, false); // yumuşak animasyon ile merkeze gelsin
+    }
 }

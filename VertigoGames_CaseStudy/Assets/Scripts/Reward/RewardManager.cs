@@ -13,11 +13,13 @@ public class RewardManager : MonoBehaviour
     private void OnEnable()
     {
         WheelEvents.OnRewardCalculated += HandleReward;
+        WheelEvents.OnLevelReset += ResetRewards;
     }
 
     private void OnDisable()
     {
         WheelEvents.OnRewardCalculated -= HandleReward;
+        WheelEvents.OnLevelReset -= ResetRewards;
     }
 
     private void HandleReward(WheelSliceData data)
