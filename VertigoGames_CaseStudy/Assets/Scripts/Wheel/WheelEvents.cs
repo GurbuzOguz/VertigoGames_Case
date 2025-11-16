@@ -3,15 +3,24 @@ using UnityEngine;
 
 public static class WheelEvents
 {
-    public static Action OnSpinRequest;              // Spin butonu tarafından tetiklenir
-    public static Action<int> OnSliceChosen;         // WheelController slice seçtiğinde tetikler
-    public static Action OnSpinStarted;              // WheelRotate başlarken
-    public static Action<float> OnRotateToAngle;     // Wheel döndürülmesi gereken açı
-    public static Action OnSpinCompleted;            // WheelRotate bittiğinde
+    //Spin Events
+    public static Action OnSpinRequest;              
+    public static Action<int> OnSliceChosen;        
+    public static Action OnSpinStarted;             
+    public static Action<float> OnRotateToAngle;     
+    public static Action OnSpinCompleted;            
+    
+    //Sound Event
     public static Action OnSliceTick;
+    
+    //Reward Event
     public static Action<WheelSliceData> OnRewardCalculated;
+    
+    //Level Events
     public static Action<WheelType> OnLevelChanged;
     public static Action<int> OnLevelNumberChanged;
+    
+    //Bomb Selected Events
     public static Action OnBombSelected;
     public static Action OnLevelReset;
     
@@ -25,5 +34,4 @@ public static class WheelEvents
     //Ads Panel Events
     public static Action OnAdsFinished;
     public static Action OnAdsRequested;
-
 }

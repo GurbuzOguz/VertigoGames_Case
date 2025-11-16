@@ -15,9 +15,9 @@ public class RewardPopEffectController : MonoBehaviour
     [SerializeField] private float travelDuration = 0.5f;
 
     [Header("References")]
-    [SerializeField] private RectTransform popSpawnPoint;     // Çarkın yakınında bir UI nokta
-    [SerializeField] private Canvas mainCanvas;               // Ana canvas (UI space conversion için)
-    [SerializeField] private Image popIconPrefab;             // Küçük uçan icon prefabı
+    [SerializeField] private RectTransform popSpawnPoint;     
+    [SerializeField] private Canvas mainCanvas;              
+    [SerializeField] private Image popIconPrefab;             
 
     private void Awake()
     {
@@ -33,7 +33,6 @@ public class RewardPopEffectController : MonoBehaviour
     {
         List<Image> icons = new List<Image>();
 
-        // 1) Random Outward pop
         for (int i = 0; i < popCount; i++)
         {
             var img = Instantiate(popIconPrefab, popSpawnPoint.parent);
@@ -51,10 +50,9 @@ public class RewardPopEffectController : MonoBehaviour
                 .DOMove(targetPos, popDuration)
                 .SetEase(Ease.OutBack);
 
-            yield return new WaitForSeconds(0.05f); // küçük gecikme
+            yield return new WaitForSeconds(0.05f); 
         }
 
-        // 2) Hepsi reward item'a doğru uçsun
         Vector3 endPos = target.position;
 
         foreach (var icon in icons)
@@ -68,15 +66,13 @@ public class RewardPopEffectController : MonoBehaviour
                     {
                         Destroy(icon.gameObject);
                     });
+                    
+                    target.DOScale(1.25f, 0.15f)
+                        .SetLoops(2, LoopType.Yoyo)
+                        .SetEase(Ease.OutQuad);
                 });
         }
 
-        // 3) UI icon scale bounce
-        target.DOScale(1.25f, 0.15f)
-              .SetLoops(2, LoopType.Yoyo)
-              .SetEase(Ease.OutQuad);
-
-        // 4) Pop effect tamamlandı
         yield return new WaitForSeconds(travelDuration);
         onComplete?.Invoke();
     }

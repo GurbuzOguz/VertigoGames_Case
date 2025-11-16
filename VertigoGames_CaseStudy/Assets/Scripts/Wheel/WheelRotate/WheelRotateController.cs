@@ -53,7 +53,7 @@ public class WheelRotateController : MonoBehaviour
         if (idleTween != null) return; 
 
         idleTween = wheel
-            .DORotate(new Vector3(0, 0, wheel.localEulerAngles.z - 360f), idleSpeed, RotateMode.FastBeyond360)
+            .DORotate(new Vector3(0, 0, wheel.localEulerAngles.z + 360f), idleSpeed, RotateMode.FastBeyond360)
             .SetEase(Ease.Linear)
             .SetLoops(-1, LoopType.Restart)
             .OnUpdate(() =>

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -48,7 +49,6 @@ public class WheelController : MonoBehaviour
             return;
         }
 
-        // ⭐ Tema için gerekli event
         WheelEvents.OnLevelChanged?.Invoke(currentLevel.wheelType);
         WheelEvents.OnLevelNumberChanged?.Invoke(currentLevelNumber);
 
@@ -57,66 +57,43 @@ public class WheelController : MonoBehaviour
 
 
 
-    //------------------------------------------------------------
-    // Slice index seçimi → FinalAngle hesaplama → Event gönderme
-    //------------------------------------------------------------
+ 
     private void HandleSpinRequest()
     {
         int sliceIndex = Random.Range(0, currentLevel.slices.Count);
         lastSliceIndex = sliceIndex;
 
-        // 1) Doğru final açıyı hesapla
         float finalAngle = CalculateFinalAngle(sliceIndex);
 
-        // 2) WheelRotateController’a döndürmesi için gönder
         WheelEvents.OnRotateToAngle?.Invoke(finalAngle);
-
-        // 3) Bilgi için sliceIndex'i de yayınlayalım (opsiyon)
         WheelEvents.OnSliceChosen?.Invoke(sliceIndex);
     }
 
-    //------------------------------------------------------------
-    // DOĞRU AÇI HESAPLAMA — %100 HATA YOK
-    //------------------------------------------------------------
+   
     private float CalculateFinalAngle(int sliceIndex)
     {
         float currentAngle = wheelRoot.localEulerAngles.z;
-
-        // UI’daki template açısı
         float templateAngle = sliceTemplates[sliceIndex].localEulerAngles.z;
-
-        // Wheel ters yönde döndüğü için açı ters çevrilir
         float targetAngle = -templateAngle;
 
-        // Aradaki fark
         float delta = Mathf.DeltaAngle(currentAngle, targetAngle);
-
-        // Fazladan tur (casino hissi)
         float extra = Random.Range(3, 6) * 360f;
 
         return currentAngle + extra + delta;
     }
 
-    //------------------------------------------------------------
-    // SPIN BİTTİ → ÖDÜL GÖNDER
-    //------------------------------------------------------------
     private void NotifyRewardManager()
     {
         WheelSliceData slice = currentLevel.slices[lastSliceIndex];
 
-        // 1) BOMBA kontrolü
         if (slice.sliceType == SliceType.Bomb)
         {
             Debug.Log("BOMBA seçildi → Lose!");
-            WheelEvents.OnBombSelected?.Invoke();   // lose panel açılacak
-            //WheelEvents.OnLevelReset?.Invoke();
-            return;                                 // ödül akışı yok
+            WheelEvents.OnBombSelected?.Invoke();   
+            return;                                
         }
 
-        // 2) NORMAL ÖDÜL (non-bomb)
         WheelEvents.OnRewardCalculated?.Invoke(slice);
-
-        // 3) LEVEL UP
         GoToNextLevel();
     }
 
@@ -134,19 +111,12 @@ public class WheelController : MonoBehaviour
         }
 
         Debug.Log("Yeni level yüklendi → Level " + currentLevelNumber);
-
-        // 🔥 Doğrusu: Tema + slice + diğer setup burada çalışır
         SetupLevel(currentLevelNumber);
     }
 
 
-
-    //------------------------------------------------------------
-    // Slice UI oluşturma
-    //------------------------------------------------------------
     private void BuildSlices(WheelLevel level)
     {
-        // Önce sliceParent içini temizle
         for (int i = sliceParent.childCount - 1; i >= 0; i--)
             Destroy(sliceParent.GetChild(i).gameObject);
 
@@ -156,7 +126,6 @@ public class WheelController : MonoBehaviour
             return;
         }
 
-        // Slice prefablarını template açılarına göre oluştur
         for (int i = 0; i < level.slices.Count; i++)
         {
             var go = Instantiate(slicePrefab, sliceParent);
@@ -165,6 +134,7 @@ public class WheelController : MonoBehaviour
 
             go.transform.localPosition = sliceTemplates[i].localPosition;
             go.transform.localRotation = sliceTemplates[i].localRotation;
+            go.transform.DOScale(Vector3.zero, .5f).SetEase(Ease.OutBack).From();
         }
     }
     
