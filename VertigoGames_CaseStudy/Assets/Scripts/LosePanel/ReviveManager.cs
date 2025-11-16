@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class ReviveManager : MonoBehaviour
 {
-    [SerializeField] private int currentCoins;
     [SerializeField] private int reviveCost = 50;
-    [SerializeField] private TextMeshProUGUI reviveCostText;
+    [SerializeField] private TMP_Text ui_reviveCost_value;
+
+    private int Coins
+    {
+        get => PlayerPrefs.GetInt("COINS", 0);
+        set => PlayerPrefs.SetInt("COINS", value);
+    }
 
     private void Start()
     {
-        reviveCostText.text = reviveCost.ToString();
-        currentCoins = PlayerPrefs.GetInt("COINS", reviveCost);
+        ui_reviveCost_value.text = reviveCost.ToString();
     }
 
     private void OnEnable()
@@ -26,19 +30,20 @@ public class ReviveManager : MonoBehaviour
 
     private void TryRevive()
     {
-        if (currentCoins >= reviveCost)
+        if (Coins >= reviveCost)
         {
-            currentCoins -= reviveCost;
-            PlayerPrefs.SetInt("COINS", currentCoins);
-
-            Debug.Log("Revive başarılı!");
-            WheelEvents.OnReviveSuccess?.Invoke();  // 🔥 panel kapanacak
+            Coins -= reviveCost;
+            WheelEvents.OnReviveSuccess?.Invoke();
         }
         else
         {
-            Debug.Log("Revive başarısız (coin yok)");
-            WheelEvents.OnReviveFailed?.Invoke();  // 🔥 panel KAPANMAYACAK
+            WheelEvents.OnReviveFailed?.Invoke();
         }
     }
 
+    private void OnValidate()
+    {
+        if (ui_reviveCost_value == null)
+            ui_reviveCost_value = transform.Find("ui_reviveCost_value")?.GetComponent<TMP_Text>();
+    }
 }

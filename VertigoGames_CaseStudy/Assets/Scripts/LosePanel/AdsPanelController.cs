@@ -19,12 +19,11 @@ public class AdsPanelController : MonoBehaviour
 
     public void ShowPanel()
     {
-        // GameObject aktif kalıyor → sadece görünürlük kontrolü
-
         panel.interactable = true;
         panel.blocksRaycasts = true;
 
-        panel.DOKill(); // varsa eski animasyonu sil
+        panel.DOKill();
+        panel.alpha = 0;
         panel.DOFade(1f, 0.25f).SetEase(Ease.OutCubic);
     }
 
@@ -34,6 +33,6 @@ public class AdsPanelController : MonoBehaviour
         panel.blocksRaycasts = false;
 
         panel.DOKill();
-        panel.DOFade(0f, 0.2f).SetEase(Ease.OutQuad);
+        panel.DOFade(0f, 0.2f).SetEase(Ease.InCubic);
     }
 }

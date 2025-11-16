@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class AdsButtonController : MonoBehaviour
 {
-    [SerializeField] private UIButtonHandler ui_button_ads;
+    [SerializeField] private UI_ButtonHandler ui_button_ads;
 
     private void OnEnable()
     {
-        ui_button_ads.onClick += HandleAdsButton;
+        ui_button_ads.OnClicked += HandleAdsButton;
     }
 
     private void OnDisable()
     {
-        ui_button_ads.onClick -= HandleAdsButton;
+        ui_button_ads.OnClicked -= HandleAdsButton;
     }
 
     private void HandleAdsButton()
@@ -23,7 +23,7 @@ public class AdsButtonController : MonoBehaviour
     {
         if (ui_button_ads == null)
         {
-            ui_button_ads = transform.Find("ui_button_ads")?.GetComponent<UIButtonHandler>();
+            ui_button_ads = transform.Find("ui_button_ads")?.GetComponent<UI_ButtonHandler>();
         }
     }
 }

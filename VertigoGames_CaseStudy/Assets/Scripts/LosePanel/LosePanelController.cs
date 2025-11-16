@@ -8,19 +8,24 @@ public class LosePanelController : MonoBehaviour
     private void OnEnable()
     {
         WheelEvents.OnBombSelected += OpenPanel;
+
         WheelEvents.OnGiveUpChosen += HandleGiveUp;
         WheelEvents.OnReviveFailed += HandleReviveFailed;
-        WheelEvents.OnReviveSuccess += HandleRevive;
-        WheelEvents.OnAdsFinished += HandleAdsFinished;
+        WheelEvents.OnReviveSuccess += HandleReviveSuccess;
 
+        WheelEvents.OnAdsRequested += HandleAdsRequested;
+        WheelEvents.OnAdsFinished += HandleAdsFinished;
     }
 
     private void OnDisable()
     {
         WheelEvents.OnBombSelected -= OpenPanel;
+
         WheelEvents.OnGiveUpChosen -= HandleGiveUp;
         WheelEvents.OnReviveFailed -= HandleReviveFailed;
-        WheelEvents.OnReviveSuccess -= HandleRevive;
+        WheelEvents.OnReviveSuccess -= HandleReviveSuccess;
+
+        WheelEvents.OnAdsRequested -= HandleAdsRequested;
         WheelEvents.OnAdsFinished -= HandleAdsFinished;
     }
 
@@ -30,6 +35,7 @@ public class LosePanelController : MonoBehaviour
         panel.interactable = true;
         panel.blocksRaycasts = true;
 
+        panel.DOKill();
         panel.DOFade(1f, 0.25f);
     }
 
@@ -38,6 +44,7 @@ public class LosePanelController : MonoBehaviour
         panel.interactable = false;
         panel.blocksRaycasts = false;
 
+        panel.DOKill();
         panel.DOFade(0f, 0.2f);
     }
 
@@ -47,7 +54,7 @@ public class LosePanelController : MonoBehaviour
         WheelEvents.OnLevelReset?.Invoke();
     }
 
-    private void HandleRevive()
+    private void HandleReviveSuccess()
     {
         ClosePanel();
     }
@@ -56,9 +63,14 @@ public class LosePanelController : MonoBehaviour
     {
         Debug.Log("Revive başarısız → coin yok.");
     }
-    
+
+    private void HandleAdsRequested()
+    {
+        ClosePanel();   
+    }
+
     private void HandleAdsFinished()
     {
-        ClosePanel();
+        ClosePanel();  
     }
 }

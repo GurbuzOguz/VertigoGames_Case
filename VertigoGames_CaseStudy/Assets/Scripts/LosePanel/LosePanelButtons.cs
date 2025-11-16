@@ -4,19 +4,19 @@ using UnityEngine.EventSystems;
 public class LosePanelButtons : MonoBehaviour
 {
     [Header("Auto References (OnValidate)")]
-    [SerializeField] private UIButtonHandler ui_button_giveup;
-    [SerializeField] private UIButtonHandler ui_button_revive;
+    [SerializeField] private UI_ButtonHandler ui_button_giveup;
+    [SerializeField] private UI_ButtonHandler ui_button_revive;
 
     private void OnEnable()
     {
-        ui_button_giveup.onClick += OnGiveUpPressed;
-        ui_button_revive.onClick += OnRevivePressed;
+        ui_button_giveup.OnClicked += OnGiveUpPressed;
+        ui_button_revive.OnClicked += OnRevivePressed;
     }
 
     private void OnDisable()
     {
-        ui_button_giveup.onClick -= OnGiveUpPressed;
-        ui_button_revive.onClick -= OnRevivePressed;
+        ui_button_giveup.OnClicked -= OnGiveUpPressed;
+        ui_button_revive.OnClicked -= OnRevivePressed;
     }
 
     // ------------------------------------------------------------
@@ -25,10 +25,10 @@ public class LosePanelButtons : MonoBehaviour
     private void OnValidate()
     {
         if (ui_button_giveup == null)
-            ui_button_giveup = transform.Find("ui_button_giveup")?.GetComponent<UIButtonHandler>();
+            ui_button_giveup = transform.Find("ui_button_giveup")?.GetComponent<UI_ButtonHandler>();
 
         if (ui_button_revive == null)
-            ui_button_revive = transform.Find("ui_button_revive")?.GetComponent<UIButtonHandler>();
+            ui_button_revive = transform.Find("ui_button_revive")?.GetComponent<UI_ButtonHandler>();
     }
 
     // ------------------------------------------------------------

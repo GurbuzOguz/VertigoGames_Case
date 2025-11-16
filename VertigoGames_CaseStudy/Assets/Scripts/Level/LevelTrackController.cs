@@ -1,176 +1,206 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
-using System.Collections.Generic;
 
 public class LevelTrackController : MonoBehaviour
 {
-    [Header("References")] [SerializeField]
-    private RectTransform ui_parent; // Kayan konteyner
+    [Header("UI References (Auto)")]
+    [SerializeField] private RectTransform ui_level_track_parent;      
+    [SerializeField] private RectTransform ui_level_current_border;   
+    [SerializeField] private GameObject ui_level_icon_prefab;          
 
-    [SerializeField] private RectTransform ui_currentBorder; // Sabit border
-    [SerializeField] private GameObject levelIconPrefab;
+    [Header("Settings")]
+    [SerializeField] private int totalLevels = 50;       
+    [SerializeField] private float baseSpacing = 120f;     
+    [SerializeField] private float moveDuration = 0.35f;   
+    [SerializeField] private bool centerOnStart = true;    
 
-    [Header("Settings")] [SerializeField] private int totalLevels = 50;
-    [SerializeField] private float spacing = 120f; // ikonlar arası mesafe
-    [SerializeField] private float moveDuration = 0.35f; // kayma süresi
+    [Header("Colors")]
+    [SerializeField] private Color levelNormalColor = Color.white;
+    [SerializeField] private Color levelSafeColor   = new Color(0.4f, 1f, 0.4f); 
+    [SerializeField] private Color levelSuperColor  = new Color(1f, 0.85f, 0.2f); 
 
-    [Header("Colors")] [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color greenColor = new Color(0.4f, 1f, 0.4f);
-    [SerializeField] private Color goldColor = new Color(1f, 0.85f, 0.2f);
+    private readonly List<LevelIconView> _icons = new();
+    private bool _initialized = false;
 
-    private List<LevelIcon> icons = new();
+    private void OnValidate()
+    {
+        if (ui_level_track_parent == null)
+        {
+            ui_level_track_parent = GetComponent<RectTransform>();
+        }
 
+        if (ui_level_current_border == null)
+        {
+            var borderTransform = transform.root.Find("ui_level_current_border");
+            if (borderTransform != null)
+                ui_level_current_border = borderTransform.GetComponent<RectTransform>();
+        }
+    }
 
-    // ============================================================
-    // INIT
-    // ============================================================
+    
     private void Start()
     {
-        BuildIcons();
-        PositionIcons();
-        UpdateAllIcons();
-        CenterInstant(1);
+        InitializeIfNeeded();
+
+        if (centerOnStart)
+        {
+            CenterLevelInstant(1);
+        }
     }
 
     private void OnEnable()
     {
-        WheelEvents.OnLevelReset += OnLevelReset;
-        WheelEvents.OnLevelNumberChanged += CenterOnLevel;
+        WheelEvents.OnLevelReset        += OnLevelReset;
+        WheelEvents.OnLevelNumberChanged += OnLevelNumberChanged;
     }
 
     private void OnDisable()
     {
-        WheelEvents.OnLevelNumberChanged -= CenterOnLevel;
-        WheelEvents.OnLevelReset -= OnLevelReset;
+        WheelEvents.OnLevelReset        -= OnLevelReset;
+        WheelEvents.OnLevelNumberChanged -= OnLevelNumberChanged;
     }
 
-    // ============================================================
-    // ICON BUILD
-    // ============================================================
+    private void InitializeIfNeeded()
+    {
+        if (_initialized) return;
+        _initialized = true;
+
+        BuildIcons();
+        PositionIcons();
+        UpdateAllIcons();
+    }
+
     private void BuildIcons()
     {
-        icons.Clear();
+        _icons.Clear();
+
+        for (int i = ui_level_track_parent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(ui_level_track_parent.GetChild(i).gameObject);
+        }
 
         for (int i = 1; i <= totalLevels; i++)
         {
-            var go = Instantiate(levelIconPrefab, ui_parent);
+            var go = Instantiate(ui_level_icon_prefab, ui_level_track_parent);
             var rect = go.GetComponent<RectTransform>();
-            var icon = new LevelIcon(rect);
 
-            icons.Add(icon);
+            var text = go.GetComponentInChildren<TMP_Text>(true);
+            if (text == null)
+            {
+                Debug.LogError("[LevelTrackController] Level icon prefab'ta TMP_Text bulunamadı. " +
+                               "Lütfen child'a 'level_value' isimli TMP ekleyin.", go);
+            }
+
+            var iconView = new LevelIconView(rect, text);
+            _icons.Add(iconView);
         }
     }
-
 
     private void PositionIcons()
     {
-        for (int i = 0; i < icons.Count; i++)
+        float spacing = baseSpacing;
+
+        for (int i = 0; i < _icons.Count; i++)
         {
-            icons[i].rect.anchoredPosition = new Vector2(i * spacing, 0);
+            var rect = _icons[i].Rect;
+            rect.anchoredPosition = new Vector2(i * spacing, 0f);
         }
     }
 
-
-    // ============================================================
-    // UPDATE COLORS + TEXT
-    // ============================================================
     private void UpdateAllIcons()
     {
-        for (int i = 0; i < icons.Count; i++)
+        for (int i = 0; i < _icons.Count; i++)
         {
-            int level = i + 1;
+            int levelNumber = i + 1;
+            Color levelColor = GetColorForLevel(levelNumber);
 
-            icons[i].SetLevelNumber(level, normalColor, greenColor, goldColor);
+            _icons[i].SetLevel(levelNumber, levelColor);
         }
     }
 
-
-    // ============================================================
-    // CENTERING
-    // ============================================================
-    private void CenterInstant(int level)
+    private Color GetColorForLevel(int level)
     {
-        Center(level, true);
+        if (level == 1)
+            return levelSafeColor;
+
+        if (level % 30 == 0)
+            return levelSuperColor;
+
+        if (level % 5 == 0)
+            return levelSafeColor;
+
+        return levelNormalColor;
     }
 
-    private void CenterOnLevel(int level)
+    
+    private void CenterLevelInstant(int level)
     {
-        Center(level, false);
+        CenterLevel(level, true);
     }
 
-    private void Center(int level, bool instant)
+    private void CenterLevelSmooth(int level)
     {
-        if (level < 1 || level > icons.Count) return;
+        CenterLevel(level, false);
+    }
 
-        RectTransform target = icons[level - 1].rect;
+    private void CenterLevel(int level, bool instant)
+    {
+        if (_icons.Count == 0) return;
+        if (level < 1 || level > _icons.Count) return;
 
-        // dünya pozisyonları arasındaki fark
-        float diff = ui_currentBorder.position.x - target.position.x;
+        RectTransform targetRect = _icons[level - 1].Rect;
 
-        Vector3 newWorldPos = ui_parent.position + new Vector3(diff, 0, 0);
+        float diffX = ui_level_current_border.position.x - targetRect.position.x;
+        Vector3 targetWorldPos = ui_level_track_parent.position + new Vector3(diffX, 0f, 0f);
 
         if (instant)
         {
-            ui_parent.position = newWorldPos;
+            ui_level_track_parent.position = targetWorldPos;
         }
         else
         {
-            ui_parent.DOMoveX(newWorldPos.x, moveDuration)
+            ui_level_track_parent
+                .DOMoveX(targetWorldPos.x, moveDuration)
                 .SetEase(Ease.OutCubic);
         }
     }
 
-
-    // ============================================================
-    // LEVEL ICON CLASS
-    // ============================================================
-    private class LevelIcon
+    private void OnLevelNumberChanged(int level)
     {
-        public RectTransform rect;
-        private TMP_Text text;
+        InitializeIfNeeded();
 
-        public LevelIcon(RectTransform r)
-        {
-            rect = r;
-            text = r.GetComponentInChildren<TMP_Text>();
-        }
-
-        public void SetLevelNumber(int lvl, Color normal, Color green, Color gold)
-        {
-            text.text = lvl.ToString();
-
-            // ⭐ 1 numara özel durum
-            if (lvl == 1)
-            {
-                text.color = green;
-                return;
-            }
-
-            // ⭐ 30, 60, 90...
-            if (lvl % 30 == 0)
-            {
-                text.color = gold;
-                return;
-            }
-
-            // ⭐ 5, 10, 15, 20...
-            if (lvl % 5 == 0)
-            {
-                text.color = green;
-                return;
-            }
-
-            // ⭐ Diğerleri
-            text.color = normal;
-        }
+        UpdateAllIcons();
+        CenterLevelSmooth(level);
     }
 
     private void OnLevelReset()
     {
-        // Level 1’e dön
-        UpdateAllIcons(); // 1 → 50 textleri ve renkleri yeniden bas
-        Center(1, false); // yumuşak animasyon ile merkeze gelsin
+        InitializeIfNeeded();
+
+        UpdateAllIcons();
+        CenterLevelInstant(1);
+    }
+
+    private class LevelIconView
+    {
+        public RectTransform Rect { get; }
+        private readonly TMP_Text _levelText;
+
+        public LevelIconView(RectTransform rect, TMP_Text levelText)
+        {
+            Rect = rect;
+            _levelText = levelText;
+        }
+
+        public void SetLevel(int levelNumber, Color color)
+        {
+            if (_levelText == null) return;
+
+            _levelText.text = levelNumber.ToString();
+            _levelText.color = color;
+        }
     }
 }
