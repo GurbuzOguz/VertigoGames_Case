@@ -30,6 +30,7 @@ public class RotateLoop : MonoBehaviour
         rotateTween = transform
             .DORotate(rotationAxis, duration, RotateMode.FastBeyond360)
             .SetEase(easeType)
-            .SetLoops(-1, loopType);
+            .SetLoops(-1, loopType)
+            .SetUpdate(true);
     }
 }

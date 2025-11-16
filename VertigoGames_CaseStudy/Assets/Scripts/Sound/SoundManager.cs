@@ -4,6 +4,12 @@ public class SoundManager : MonoBehaviour
 {
     [SerializeField] private AudioSource tickAudio;
 
+    private void OnValidate()
+    {
+        if (tickAudio == null)
+            tickAudio = GetComponent<AudioSource>();
+    }
+
     private void OnEnable()
     {
         WheelEvents.OnSliceTick += PlayTickSound;
@@ -18,7 +24,7 @@ public class SoundManager : MonoBehaviour
     {
         if (tickAudio == null) return;
 
-        tickAudio.Stop(); // Aynı anda çakışmayı önler
+        tickAudio.Stop();   // çakışmayı önler
         tickAudio.Play();
     }
 }
