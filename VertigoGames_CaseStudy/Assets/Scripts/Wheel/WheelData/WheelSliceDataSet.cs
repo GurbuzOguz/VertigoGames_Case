@@ -11,7 +11,7 @@ public class WheelSliceDataSet : MonoBehaviour
     [SerializeField] private TextMeshProUGUI rewardText_value;
     [SerializeField] private Image iconImage;
 
-    public void Setup(WheelSliceData data)
+    public void Setup(WheelSliceData data, float multiplier)
     {
         wheelSliceData = data;
 
@@ -23,10 +23,8 @@ public class WheelSliceDataSet : MonoBehaviour
 
         iconImage.sprite = data.iconSprite;
 
-        if (data.rewardValue > 0)
-            rewardText_value.text = "x" + data.rewardValue.ToString();
-        else
-            rewardText_value.text = "";
+        int finalReward = Mathf.RoundToInt(data.rewardValue * multiplier);
 
+        rewardText_value.text = finalReward > 0 ? "x" + finalReward : "";
     }
 }

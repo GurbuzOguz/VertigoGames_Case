@@ -130,13 +130,14 @@ public class WheelController : MonoBehaviour
         {
             var go = Instantiate(slicePrefab, sliceParent);
             var set = go.GetComponent<WheelSliceDataSet>();
-            set.Setup(level.slices[i]);
+
+            set.Setup(level.slices[i], level.rewardMultiplier);
 
             go.transform.localPosition = sliceTemplates[i].localPosition;
             go.transform.localRotation = sliceTemplates[i].localRotation;
-            go.transform.DOScale(Vector3.zero, .5f).SetEase(Ease.OutBack).From();
         }
     }
+
     
     private void ResetLevel()
     {

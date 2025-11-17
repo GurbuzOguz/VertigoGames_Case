@@ -13,6 +13,7 @@ public enum WheelType
 public class WheelLevel
 {
     public int levelNumber;
+    public float rewardMultiplier;
     public WheelType wheelType;
     public List<WheelSliceData> slices = new List<WheelSliceData>(8);
 }
