@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using DG.Tweening;
 
 public class WheelRotateController : MonoBehaviour
@@ -6,16 +8,30 @@ public class WheelRotateController : MonoBehaviour
     [SerializeField] private Transform wheel;
     [SerializeField] private float idleSpeed = 20f;
     [SerializeField] private float spinDuration = 4f;
-    [SerializeField] private float bounceAmount = 10f;
-    [SerializeField] private float bounceDuration = 0.25f;
 
     private Tween idleTween;
+    private Tween spinTween;
+
     private float lastAngle = 0f;
+    private bool skipEnabled = false;
 
     private void Start()
     {
         StartIdleSpin();
     }
+
+    private void Update()
+    {
+        if (skipEnabled && spinTween != null && spinTween.IsActive())
+        {
+            if (!EventSystem.current.IsPointerOverGameObject() &&
+                Input.GetMouseButtonDown(0))
+            {
+                spinTween.Complete();
+            }
+        }
+    }
+
 
     private void OnEnable()
     {
@@ -36,47 +52,45 @@ public class WheelRotateController : MonoBehaviour
 
     private void StopIdleSpin()
     {
-        if (idleTween != null)
-        {
-            idleTween.Kill();
-            idleTween = null;
-        }
+        idleTween?.Kill();
+        idleTween = null;
     }
-    
+
     private void StartIdleSpin()
     {
-        if (idleTween != null) return; 
+        if (idleTween != null) return;
 
         idleTween = wheel
             .DORotate(new Vector3(0, 0, wheel.localEulerAngles.z + 360f), idleSpeed, RotateMode.FastBeyond360)
             .SetEase(Ease.Linear)
             .SetLoops(-1, LoopType.Restart)
-            .OnUpdate(() =>
-            {
-                SliceTickCheck();
-            });
+            .OnUpdate(SliceTickCheck);
     }
-
 
     private void SpinToAngle(float finalAngle)
     {
         StopIdleSpin();
         lastAngle = wheel.localEulerAngles.z;
 
-        wheel
+        skipEnabled = false;
+
+        spinTween = wheel
             .DORotate(new Vector3(0, 0, finalAngle), spinDuration, RotateMode.FastBeyond360)
             .SetEase(Ease.OutCubic)
-            .OnUpdate(SliceTickCheck)  
+            .OnUpdate(SliceTickCheck)
+            .OnStart(() => StartCoroutine(EnableSkipNextFrame()))
             .OnComplete(() =>
             {
-                // wheel
-                //     .DORotate(new Vector3(0, 0, finalAngle - bounceAmount), bounceDuration)
-                //     .SetEase(Ease.OutSine)
-                //     .SetLoops(2, LoopType.Yoyo)
-                //     .OnComplete(NormalizeAndComplete);
-                
+                skipEnabled = false;
+                spinTween = null;
                 NormalizeAndComplete();
             });
+    }
+
+    private System.Collections.IEnumerator EnableSkipNextFrame()
+    {
+        yield return null; 
+        skipEnabled = true; 
     }
 
     private void SliceTickCheck()
@@ -87,9 +101,7 @@ public class WheelRotateController : MonoBehaviour
         int currIndex = Mathf.FloorToInt((current % 360f) / 45f);
 
         if (prevIndex != currIndex)
-        {
             WheelEvents.OnSliceTick?.Invoke();
-        }
 
         lastAngle = current;
     }

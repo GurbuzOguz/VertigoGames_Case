@@ -1,8 +1,14 @@
+using System;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
     [SerializeField] private AudioSource tickAudio;
+
+    private void Awake()
+    {
+        Application.targetFrameRate = 120;
+    }
 
     private void OnValidate()
     {
@@ -24,7 +30,7 @@ public class SoundManager : MonoBehaviour
     {
         if (tickAudio == null) return;
 
-        tickAudio.Stop();   // çakışmayı önler
+        tickAudio.Stop();   
         tickAudio.Play();
     }
 }

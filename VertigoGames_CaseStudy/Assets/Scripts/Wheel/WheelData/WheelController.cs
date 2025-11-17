@@ -10,10 +10,10 @@ public class WheelController : MonoBehaviour
     [SerializeField] private WheelLevelDataBase levelDatabase;
 
     [Header("References")]
-    [SerializeField] private Transform wheelRoot;          // WheelRotateController’ın döndürdüğü objedir
-    [SerializeField] private Transform sliceParent;        // Instantiate edilen slice'ların parent'ı
-    [SerializeField] private GameObject slicePrefab;       // Slice görsel prefabı
-    [SerializeField] private List<Transform> sliceTemplates; // UI template referansları (her biri 0–7)
+    [SerializeField] private Transform wheelRoot;          
+    [SerializeField] private Transform sliceParent;       
+    [SerializeField] private GameObject slicePrefab;     
+    [SerializeField] private List<Transform> sliceTemplates;
 
     private WheelLevel currentLevel;
     private int lastSliceIndex;
@@ -54,9 +54,6 @@ public class WheelController : MonoBehaviour
 
         BuildSlices(currentLevel);
     }
-
-
-
  
     private void HandleSpinRequest()
     {
