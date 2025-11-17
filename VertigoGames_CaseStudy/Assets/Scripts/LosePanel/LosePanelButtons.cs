@@ -19,9 +19,7 @@ public class LosePanelButtons : MonoBehaviour
         ui_button_revive.OnClicked -= OnRevivePressed;
     }
 
-    // ------------------------------------------------------------
-    // OnValidate → Auto-Bind Buttons
-    // ------------------------------------------------------------
+
     private void OnValidate()
     {
         if (ui_button_giveup == null)
@@ -31,9 +29,6 @@ public class LosePanelButtons : MonoBehaviour
             ui_button_revive = transform.Find("ui_button_revive")?.GetComponent<UI_ButtonHandler>();
     }
 
-    // ------------------------------------------------------------
-    // Button actions → Event based
-    // ------------------------------------------------------------
     private void OnGiveUpPressed()
     {
         WheelEvents.OnGiveUpChosen?.Invoke();

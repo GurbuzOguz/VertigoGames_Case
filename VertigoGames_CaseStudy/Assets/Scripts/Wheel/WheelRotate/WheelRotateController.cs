@@ -10,8 +10,6 @@ public class WheelRotateController : MonoBehaviour
     [SerializeField] private float bounceDuration = 0.25f;
 
     private Tween idleTween;
-
-    // Tick takibi için
     private float lastAngle = 0f;
 
     private void Start()
@@ -31,9 +29,6 @@ public class WheelRotateController : MonoBehaviour
         WheelEvents.OnSpinRequest -= OnSpinRequested;
     }
 
-    // --------------------------------------------------------------------
-    // 🟩 Spin talebi geldiğinde ilk olarak tetikler (Buton kapansın)
-    // --------------------------------------------------------------------
     private void OnSpinRequested()
     {
         WheelEvents.OnSpinStarted?.Invoke();
@@ -71,20 +66,19 @@ public class WheelRotateController : MonoBehaviour
         wheel
             .DORotate(new Vector3(0, 0, finalAngle), spinDuration, RotateMode.FastBeyond360)
             .SetEase(Ease.OutCubic)
-            .OnUpdate(SliceTickCheck)   // ⬅ SPIN TICK
+            .OnUpdate(SliceTickCheck)  
             .OnComplete(() =>
             {
-                wheel
-                    .DORotate(new Vector3(0, 0, finalAngle - bounceAmount), bounceDuration)
-                    .SetEase(Ease.OutSine)
-                    .SetLoops(2, LoopType.Yoyo)
-                    .OnComplete(NormalizeAndComplete);
+                // wheel
+                //     .DORotate(new Vector3(0, 0, finalAngle - bounceAmount), bounceDuration)
+                //     .SetEase(Ease.OutSine)
+                //     .SetLoops(2, LoopType.Yoyo)
+                //     .OnComplete(NormalizeAndComplete);
+                
+                NormalizeAndComplete();
             });
     }
 
-    // --------------------------------------------------------------------
-    // 🟨 SLICE TICK HESABI (her 45 derecede bir indicator animasyonu)
-    // --------------------------------------------------------------------
     private void SliceTickCheck()
     {
         float current = wheel.localEulerAngles.z;
@@ -102,13 +96,10 @@ public class WheelRotateController : MonoBehaviour
 
     private void NormalizeAndComplete()
     {
-        // Açıyı normalize et
         float normalized = wheel.localEulerAngles.z % 360f;
         wheel.localRotation = Quaternion.Euler(0, 0, normalized);
 
         WheelEvents.OnSpinCompleted?.Invoke();
-
-        // İşlem bitti → idle spin geri başlasın
         StartIdleSpin();
     }
 }

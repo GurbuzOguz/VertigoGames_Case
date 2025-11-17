@@ -59,28 +59,20 @@ public class WheelLevelDataBase: ScriptableObject
 
         switch (level.wheelType)
         {
-            // -------------------------------------------------------
-            // ⭐ BRONZE LEVEL → Tam 1 adet bomba olacak
-            // -------------------------------------------------------
             case WheelType.Bronze:
             {
                 AddBombSlice(level);
-                FillWithNonBomb(level, allSlicePool, 7); // geri kalan 7 dilim
+                FillWithNonBomb(level, allSlicePool, 7);
                 break;
             }
 
-            // -------------------------------------------------------
-            // ⭐ SILVER LEVEL → Bomba yok
-            // -------------------------------------------------------
+           
             case WheelType.Silver:
             {
                 FillWithNonBomb(level, allSlicePool, 8);
                 break;
             }
 
-            // -------------------------------------------------------
-            // ⭐ GOLD LEVEL → Bomba yok, özel gold havuzdan doldur
-            // -------------------------------------------------------
             case WheelType.Gold:
             {
                 FillWithNonBomb(level, goldSlicePool, 8);
@@ -133,7 +125,6 @@ public class WheelLevelDataBase: ScriptableObject
             if (candidate == null) 
                 continue;
 
-            // Bomb istemiyorsak atla
             if (candidate.sliceType == SliceType.Bomb)
                 continue;
 
@@ -147,28 +138,18 @@ public class WheelLevelDataBase: ScriptableObject
         }
     }
 
-
-
-
-
-    // Inspector'da elle + ile level eklesen bile kuralları düzeltmek için
     private void OnValidate()
     {
         for (int i = 0; i < levels.Count; i++)
         {
             var level = levels[i];
 
-            // level numarasını liste sırasına göre sabitle
             level.levelNumber = i + 1;
-
-            // level tipini kuraldan üret (5: silver, 30: gold)
             level.wheelType = GetWheelTypeForLevel(level.levelNumber);
 
-            // slice sayısı 8 olsun
             if (level.slices == null)
                 level.slices = new List<WheelSliceData>(8);
 
-            // Silver & Gold'da BOMBs varsa temizle
             if (level.wheelType != WheelType.Bronze)
             {
                 for (int s = level.slices.Count - 1; s >= 0; s--)
@@ -179,7 +160,6 @@ public class WheelLevelDataBase: ScriptableObject
                 }
             }
 
-            // Eksikse otomatik doldur
             if (level.slices.Count < 8)
                 AutoFillSlices(level);
         }
