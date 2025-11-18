@@ -46,7 +46,7 @@ public class AdsFunAnimationController : MonoBehaviour
 
     private void StartCountdown()
     {
-        countdownValue = 5;
+        countdownValue = 3;
         ui_timerText.text = countdownValue.ToString();
 
         DOTween.To(() => countdownValue, x =>
