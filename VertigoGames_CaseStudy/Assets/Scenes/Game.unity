@@ -6941,6 +6941,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonHandler: {fileID: 1781774470}
   animationTarget: {fileID: 1781774465}
+  buttonImage: {fileID: 1781774467}
 --- !u!114 &1781774470
 MonoBehaviour:
   m_ObjectHideFlags: 0

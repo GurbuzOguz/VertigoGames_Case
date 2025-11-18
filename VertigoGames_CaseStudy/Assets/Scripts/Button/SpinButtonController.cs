@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class SpinButtonController : MonoBehaviour
@@ -6,6 +7,7 @@ public class SpinButtonController : MonoBehaviour
     [Header("References (Auto)")]
     [SerializeField] private UI_ButtonHandler buttonHandler;
     [SerializeField] private Transform animationTarget;
+    [SerializeField] private Image buttonImage;  
 
     private bool isDisabled = false;
     private Vector3 defaultScale;
@@ -17,6 +19,9 @@ public class SpinButtonController : MonoBehaviour
 
         if (animationTarget == null)
             animationTarget = transform.Find("anim_target");
+
+        if (buttonImage == null)
+            buttonImage = GetComponent<Image>();   
     }
 
     private void Awake()
@@ -46,6 +51,22 @@ public class SpinButtonController : MonoBehaviour
         WheelEvents.OnSpinRequest?.Invoke();
     }
 
+    private void DisableButton()
+    {
+        isDisabled = true;
+        buttonHandler.SetInteractable(false);
+
+        buttonImage.raycastTarget = false;
+    }
+
+    private void EnableButton()
+    {
+        isDisabled = false;
+        buttonHandler.SetInteractable(true);
+
+        buttonImage.raycastTarget = true;
+    }
+
     private void PlayClickAnimation()
     {
         animationTarget.DOKill();
@@ -60,17 +81,5 @@ public class SpinButtonController : MonoBehaviour
                     .DOScale(defaultScale, 0.1f)
                     .SetEase(Ease.InQuad);
             });
-    }
-
-    private void DisableButton()
-    {
-        isDisabled = true;
-        buttonHandler.SetInteractable(false);
-    }
-
-    private void EnableButton()
-    {
-        isDisabled = false;
-        buttonHandler.SetInteractable(true);
     }
 }
