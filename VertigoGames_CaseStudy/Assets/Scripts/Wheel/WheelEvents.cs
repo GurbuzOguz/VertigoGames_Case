@@ -39,6 +39,6 @@ public static class WheelEvents
     public static Action OnExitRequested;
     public static Action OnConfirmCollectRequested;
     public static Action OnCancelCollectRequested;
-
-
+    
+    public static Action OnAllLevelsFinished;
 }

@@ -12,7 +12,7 @@ public class LevelTrackController : MonoBehaviour
     [SerializeField] private GameObject ui_level_icon_prefab;          
 
     [Header("Settings")]
-    [SerializeField] private int totalLevels = 50;       
+    [SerializeField] private int totalLevels = 200;       
     [SerializeField] private float baseSpacing = 120f;     
     [SerializeField] private float moveDuration = 0.35f;   
     [SerializeField] private bool centerOnStart = true;    
@@ -40,7 +40,6 @@ public class LevelTrackController : MonoBehaviour
         }
     }
 
-    
     private void Start()
     {
         InitializeIfNeeded();
@@ -67,7 +66,12 @@ public class LevelTrackController : MonoBehaviour
     {
         if (_initialized) return;
         _initialized = true;
-
+        
+        totalLevels = PlayerPrefs.GetInt("TotalLevels", 0);
+        
+        if (totalLevels <= 0)
+            totalLevels = 200;
+        
         BuildIcons();
         PositionIcons();
         UpdateAllIcons();

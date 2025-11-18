@@ -15,8 +15,16 @@ public class WheelLevel
     public int levelNumber;
     public float rewardMultiplier;
     public WheelType wheelType;
+
     public List<WheelSliceData> slices = new List<WheelSliceData>(8);
+
+    public SliceSelectionMode selectionMode = SliceSelectionMode.Random;
+
+    [Range(0, 7)]
+    public int fixedSliceIndex = 0;
+    public bool useWeightedRandom = false;
 }
+
 
 [CreateAssetMenu(fileName = "WheelLevelDatabase", menuName = "Wheel/WheelLevelDatabase")]
 public class WheelLevelDataBase: ScriptableObject
@@ -166,4 +174,15 @@ public class WheelLevelDataBase: ScriptableObject
         }
     }
 #endif
+    
+    
+#if UNITY_EDITOR
+    [Header("Editor Tools")]
+    public int setLevelCount = 0;
+
+    [Header("Gameplay Tools")]
+    public int currentLevelIndex = 1;   
+#endif
+
+
 }

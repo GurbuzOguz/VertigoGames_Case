@@ -23,4 +23,7 @@ public class WheelSliceData : ScriptableObject
     public Sprite iconSprite;
     public int rewardValue;
     public string description;
+    
+    [Header("Weight Settings (Random Mode)")]
+    public float weight = 1f;
 }

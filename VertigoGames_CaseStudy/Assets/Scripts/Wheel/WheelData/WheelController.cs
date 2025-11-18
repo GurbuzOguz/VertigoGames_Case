@@ -6,13 +6,14 @@ using UnityEngine.UI;
 
 public class WheelController : MonoBehaviour
 {
-    [Header("Level Data")]
-    [SerializeField] private WheelLevelDataBase levelDatabase;
+    [Header("Level Data")] [SerializeField]
+    private WheelLevelDataBase levelDatabase;
 
-    [Header("References")]
-    [SerializeField] private Transform wheelRoot;          
-    [SerializeField] private Transform sliceParent;       
-    [SerializeField] private GameObject slicePrefab;     
+    [Header("References")] [SerializeField]
+    private Transform wheelRoot;
+
+    [SerializeField] private Transform sliceParent;
+    [SerializeField] private GameObject slicePrefab;
     [SerializeField] private List<Transform> sliceTemplates;
 
     private WheelLevel currentLevel;
@@ -21,6 +22,10 @@ public class WheelController : MonoBehaviour
 
     private void Start()
     {
+        currentLevelNumber = PlayerPrefs.GetInt("CurrentLevelIndex", 0);
+        currentLevelNumber += 1;
+        
+
         SetupLevel(currentLevelNumber);
     }
 
@@ -54,10 +59,23 @@ public class WheelController : MonoBehaviour
 
         BuildSlices(currentLevel);
     }
- 
+
     private void HandleSpinRequest()
     {
-        int sliceIndex = Random.Range(0, currentLevel.slices.Count);
+        int sliceIndex = 0;
+
+        if (currentLevel.selectionMode == SliceSelectionMode.Random)
+        {
+            if (currentLevel.useWeightedRandom)
+                sliceIndex = GetWeightedRandomIndex(currentLevel.slices);
+            else
+                sliceIndex = Random.Range(0, currentLevel.slices.Count);
+        }
+
+
+        else if (currentLevel.selectionMode == SliceSelectionMode.Fixed)
+            sliceIndex = Mathf.Clamp(currentLevel.fixedSliceIndex, 0, currentLevel.slices.Count - 1);
+
         lastSliceIndex = sliceIndex;
 
         float finalAngle = CalculateFinalAngle(sliceIndex);
@@ -65,8 +83,28 @@ public class WheelController : MonoBehaviour
         WheelEvents.OnRotateToAngle?.Invoke(finalAngle);
         WheelEvents.OnSliceChosen?.Invoke(sliceIndex);
     }
+    
+    private int GetWeightedRandomIndex(List<WheelSliceData> slices)
+    {
+        float totalWeight = 0f;
 
-   
+        for (int i = 0; i < slices.Count; i++)
+            totalWeight += Mathf.Max(0.001f, slices[i].weight);
+
+        float randomValue = Random.value * totalWeight;
+
+        float cumulative = 0f;
+
+        for (int i = 0; i < slices.Count; i++)
+        {
+            cumulative += Mathf.Max(0.001f, slices[i].weight);
+            if (randomValue <= cumulative)
+                return i;
+        }
+
+        return slices.Count - 1;
+    }
+
     private float CalculateFinalAngle(int sliceIndex)
     {
         float currentAngle = wheelRoot.localEulerAngles.z;
@@ -86,15 +124,15 @@ public class WheelController : MonoBehaviour
         if (slice.sliceType == SliceType.Bomb)
         {
             Debug.Log("BOMBA seçildi → Lose!");
-            WheelEvents.OnBombSelected?.Invoke();   
-            return;                                
+            WheelEvents.OnBombSelected?.Invoke();
+            return;
         }
 
         WheelEvents.OnRewardCalculated?.Invoke(slice);
         GoToNextLevel();
     }
 
-    
+
     private void GoToNextLevel()
     {
         currentLevelNumber++;
@@ -103,13 +141,13 @@ public class WheelController : MonoBehaviour
 
         if (nextLevel == null)
         {
-            Debug.LogWarning("GoToNextLevel → Yeni level bulunamadı. En yüksek levele ulaşıldı.");
+            WheelEvents.OnAllLevelsFinished?.Invoke();
             return;
         }
 
-        Debug.Log("Yeni level yüklendi → Level " + currentLevelNumber);
         SetupLevel(currentLevelNumber);
     }
+
 
 
     private void BuildSlices(WheelLevel level)
@@ -132,10 +170,17 @@ public class WheelController : MonoBehaviour
 
             go.transform.localPosition = sliceTemplates[i].localPosition;
             go.transform.localRotation = sliceTemplates[i].localRotation;
+
+         
+            go.transform.localScale = Vector3.zero;
+            go.transform.DOScale(1f, 0.35f)
+                .SetEase(Ease.OutBack)
+                .SetDelay(i * 0.03f); 
         }
     }
 
-    
+
+
     private void ResetLevel()
     {
         currentLevelNumber = 1;
