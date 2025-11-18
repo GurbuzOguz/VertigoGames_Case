@@ -15,7 +15,7 @@ public class AdsFunAnimationController : MonoBehaviour
     [SerializeField] private float colorChangeDuration = 1f;
     [SerializeField] private float oguzScaleDuration = 0.8f;
 
-    private int countdownValue = 10;
+    private int countdownValue = 5;
 
     private void OnEnable()
     {
@@ -44,12 +44,9 @@ public class AdsFunAnimationController : MonoBehaviour
         DOTween.Kill(ui_timerText);
     }
 
-    // ============================================================
-    // COUNTDOWN (UI animation only — no UI state change!)
-    // ============================================================
     private void StartCountdown()
     {
-        countdownValue = 10;
+        countdownValue = 5;
         ui_timerText.text = countdownValue.ToString();
 
         DOTween.To(() => countdownValue, x =>
@@ -62,37 +59,24 @@ public class AdsFunAnimationController : MonoBehaviour
             .OnComplete(() =>
             {
                 ui_timerText.text = "0";
-
-                // 🔥 Tek görev = event yayınlamak
-                // Paneli kapatmak bu scriptin işi değildir (döküman gereği)
                 WheelEvents.OnAdsFinished?.Invoke();
             });
     }
 
-
-    // ============================================================
-    // CENTER TEXT → SAĞA SOLA + RENK DEĞİŞİMİ
-    // ============================================================
     private void PlayCenterMovingTextAnim()
     {
         RectTransform rt = ui_centerMovingText.rectTransform;
         Vector2 startPos = rt.anchoredPosition;
 
-        // X hareketi
         rt.DOAnchorPosX(startPos.x + centerMoveRange, centerMoveDuration)
             .SetEase(Ease.InOutQuad)
             .SetLoops(-1, LoopType.Yoyo);
 
-        // Renk cycle
         ui_centerMovingText.DOColor(RandomColor(), colorChangeDuration)
             .SetLoops(-1, LoopType.Yoyo)
             .SetEase(Ease.Linear);
     }
-
-
-    // ============================================================
-    // OĞUZ TEXT → SCALE UP/DOWN + RENK CYCLE
-    // ============================================================
+    
     private void PlayOguzAnim()
     {
         ui_oguzSpecialText.rectTransform
@@ -106,18 +90,11 @@ public class AdsFunAnimationController : MonoBehaviour
             .SetEase(Ease.Linear);
     }
 
-
-    // ============================================================
-    // RANDOM COLOR UTILITY
-    // ============================================================
     private Color RandomColor()
     {
         return new Color(Random.value, Random.value, Random.value);
     }
-
-    // ============================================================
-    // ONVALIDATE → AUTO-REFERENCE (dökümana uygun)
-    // ============================================================
+    
     private void OnValidate()
     {
         if (ui_timerText == null)

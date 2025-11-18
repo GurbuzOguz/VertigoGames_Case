@@ -4,39 +4,44 @@ using UnityEngine.UI;
 public class ExitButtonController : MonoBehaviour
 {
     [SerializeField] private Button ui_exitButton;
+    [SerializeField] private UI_ButtonHandler handler;
 
     private void OnEnable()
     {
         WheelEvents.OnSpinRequest += DisableButtonDuringSpin;
         WheelEvents.OnLevelNumberChanged += UpdateButtonByLevel;
+
+        handler.OnClicked += OnExitClick;
     }
 
     private void OnDisable()
     {
         WheelEvents.OnSpinRequest -= DisableButtonDuringSpin;
         WheelEvents.OnLevelNumberChanged -= UpdateButtonByLevel;
+
+        handler.OnClicked -= OnExitClick;
     }
 
     private void DisableButtonDuringSpin()
     {
-        if (ui_exitButton != null)
-            ui_exitButton.interactable = false;
+        ui_exitButton.interactable = false;
     }
 
     private void UpdateButtonByLevel(int level)
     {
-        if (ui_exitButton == null)
-            return;
+        ui_exitButton.interactable = (level == 1 || level % 5 == 0);
+    }
 
-        if (level == 1 || level % 5 == 0)
-            ui_exitButton.interactable = true;
-        else
-            ui_exitButton.interactable = false;
+    private void OnExitClick()
+    {
+        if (!ui_exitButton.interactable) return;
+
+        WheelEvents.OnExitRequested?.Invoke();
     }
 
     private void OnValidate()
     {
-        if (ui_exitButton == null)
-            ui_exitButton = transform.GetComponent<Button>();
+        if (ui_exitButton == null) ui_exitButton = GetComponent<Button>();
+        if (handler == null) handler = GetComponent<UI_ButtonHandler>();
     }
 }

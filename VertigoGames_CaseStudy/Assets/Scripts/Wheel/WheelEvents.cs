@@ -34,4 +34,11 @@ public static class WheelEvents
     //Ads Panel Events
     public static Action OnAdsFinished;
     public static Action OnAdsRequested;
+    
+    //Exit Events
+    public static Action OnExitRequested;
+    public static Action OnConfirmCollectRequested;
+    public static Action OnCancelCollectRequested;
+
+
 }

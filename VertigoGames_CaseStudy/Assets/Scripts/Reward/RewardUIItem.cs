@@ -26,7 +26,6 @@ public class RewardUIItem : MonoBehaviour
 
         currentAmount = end;
 
-        // Text animasyonlu artış
         DOTween.To(() => start, x =>
         {
             amountText_value.text = "x" + x;

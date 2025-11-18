@@ -4,7 +4,7 @@ using UnityEngine;
 public class WheelThemeData : ScriptableObject
 {
     [Header("Text")]
-    public string displayName;   // Bronze, Silver, Gold
+    public string displayName; 
 
     public WheelType wheelType;
 

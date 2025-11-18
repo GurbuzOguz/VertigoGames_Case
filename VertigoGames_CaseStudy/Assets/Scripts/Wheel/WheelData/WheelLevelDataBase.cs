@@ -89,7 +89,7 @@ public class WheelLevelDataBase: ScriptableObject
         for (int i = list.Count - 1; i > 0; i--)
         {
             int swapIndex = UnityEngine.Random.Range(0, i + 1);
-            (list[i], list[swapIndex]) = (list[swapIndex], list[i]); // tuple swap
+            (list[i], list[swapIndex]) = (list[swapIndex], list[i]);
         }
     }
     

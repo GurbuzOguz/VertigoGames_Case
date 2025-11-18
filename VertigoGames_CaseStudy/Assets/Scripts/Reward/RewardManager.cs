@@ -34,18 +34,15 @@ public class RewardManager : MonoBehaviour
 
         if (!activeRewards.TryGetValue(data.sliceType, out uiItem))
         {
-            // 🟦 1) ÖNCE UI ITEM OLUŞTUR (Ama sayıyı artırma)
             var go = Instantiate(rewardItemPrefab, rewardListParent);
             uiItem = go.GetComponent<RewardUIItem>();
-            uiItem.Setup(data.iconSprite, 0); // amount = 0 başla
+            uiItem.Setup(data.iconSprite, 0); 
 
             activeRewards.Add(data.sliceType, uiItem);
         }
 
-        // 🟦 2) Pop efekt oynat
         RewardPopEffectController.Instance.PlayPopEffect(data, uiItem.IconTransform, () =>
         {
-            // 🟦 3) Efekt bitince sayıyı artır
             uiItem.AddAmount(data.rewardValue);
         });
     }
@@ -64,12 +61,10 @@ public class RewardManager : MonoBehaviour
     {
         if (activeRewards.ContainsKey(data.sliceType))
         {
-            // SAME REWARD → Sayıyı arttır
             activeRewards[data.sliceType].AddAmount(data.rewardValue);
         }
         else
         {
-            // YENİ BİR REWARD → UI item oluştur
             var go = Instantiate(rewardItemPrefab, rewardListParent);
             var rewardUI = go.GetComponent<RewardUIItem>();
 
