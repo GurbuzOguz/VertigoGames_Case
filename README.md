@@ -8,8 +8,6 @@ Unity tabanlı bir **şans çarkı (wheel)** mini oyunu. Seviye ilerlemesi, öd�
 |--------|--------|
 | **Unity Editor** | **2021.3.45f2** (LTS) — `ProjectSettings/ProjectVersion.txt` ile uyumlu olmalıdır |
 
-Önerilen IDE paketleri: Visual Studio, Rider veya VS Code (`Packages/manifest.json` içinde ilgili IDE paketleri tanımlıdır).
-
 ## Projeyi Açma ve Çalıştırma
 
 1. Unity Hub üzerinden **Add** ile bu depoyu ekleyin ve proje klasörü olarak **`VertigoGames_CaseStudy`** dizinini seçin.
@@ -63,9 +61,6 @@ Unity Package Manager üzerinden: **TextMesh Pro**, **Timeline**, **uGUI**, **Vi
 
 Unity ve kullanılan asset/plugin’lerin lisansları ilgili klasörlerdeki metin dosyalarına ve Unity EULA’ya tabidir. Ticari kullanımdan önce DOTween ve TextMesh Pro örnek içeriklerinin lisans koşullarını kontrol edin.
 
----
-
-*Bu README, `VertigoGames_CaseStudy` Unity projesinin mevcut yapılandırmasına göre hazırlanmıştır.*
 
 ## Ekran görüntüleri
 
